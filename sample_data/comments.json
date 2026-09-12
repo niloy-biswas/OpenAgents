@@ -1,0 +1,14 @@
+{
+  "_note": "Synthetic seed data for insight-layer testing. Contains deliberate repeated-question and negative-sentiment patterns so pattern/sentiment detection has something real to find during the demo. Replace/extend as needed.",
+  "comments": [
+    {"id": "c1", "sender": "customer_a", "text": "Cotton Panjabi ta ki blue color e ache?", "product": "Cotton Panjabi (Men's)"},
+    {"id": "c2", "sender": "customer_b", "text": "vai blue color available?", "product": "Cotton Panjabi (Men's)"},
+    {"id": "c3", "sender": "customer_c", "text": "Is this available in blue?", "product": "Cotton Panjabi (Men's)"},
+    {"id": "c4", "sender": "customer_d", "text": "blue ache naki?", "product": "Cotton Panjabi (Men's)"},
+    {"id": "c5", "sender": "customer_e", "text": "Delivery koto din lagbe outside Dhaka?", "product": "Printed Saree"},
+    {"id": "c6", "sender": "customer_f", "text": "delivery onek slow hoyeche last time, eibar tarataari dorkar", "product": "Printed Saree"},
+    {"id": "c7", "sender": "customer_g", "text": "delivery time ta ki fix na, khub deri hocche", "product": "Printed Saree"},
+    {"id": "c8", "sender": "customer_h", "text": "Kids T-Shirt size 5-7y ache?", "product": "Kids T-Shirt"},
+    {"id": "c9", "sender": "customer_i", "text": "price koto ei shirt tar?", "product": "Kids T-Shirt"}
+  ]
+}
