@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
   const history = priorMessages.map((m) => ({ role: m.role, content: m.content }));
 
   await saveAssistantMessage({ session_id: sessionId, role: "user", content: text });
-  const reply = await runInsightChat(history, text);
+  const reply = await runInsightChat(history, text, "telegram");
   await saveAssistantMessage({ session_id: sessionId, role: "assistant", content: reply });
 
   try {

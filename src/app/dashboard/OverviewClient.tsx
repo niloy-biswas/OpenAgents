@@ -186,8 +186,8 @@ export default function OverviewClient({
               <Tooltip
                 contentStyle={{ background: "#1a1d21", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", fontSize: 12 }}
                 labelStyle={{ color: "#9ca3af" }}
-                formatter={(value: number, name: string) =>
-                  name === "revenue" ? [`৳${value.toLocaleString()}`, "Revenue"] : [value, "Orders"]
+                formatter={(value, name) =>
+                  name === "revenue" ? [`৳${Number(value).toLocaleString()}`, "Revenue"] : [value, "Orders"]
                 }
               />
               <Legend wrapperStyle={{ fontSize: 11, color: "#6b7280", paddingTop: 8 }} />
