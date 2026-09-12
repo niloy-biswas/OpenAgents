@@ -11,6 +11,7 @@ const nav = [
   { href: "/dashboard/conversations", label: "Conversations", icon: ConversationsIcon },
   { href: "/dashboard/orders", label: "Orders", icon: OrdersIcon },
   { href: "/dashboard/inventory", label: "Inventory", icon: InventoryIcon },
+  { href: "/dashboard/demand", label: "Demand", icon: DemandIcon },
   { href: "/dashboard/assistant", label: "Assistant", icon: AssistantIcon },
   { href: "/dashboard/settings", label: "Settings", icon: SettingsIcon },
 ];
@@ -278,6 +279,17 @@ function ConversationsIcon() {
       <path d="M8 21l4-4 4 4" />
       <circle cx="9" cy="10.5" r=".6" fill="currentColor" stroke="none" />
       <circle cx="15" cy="10.5" r=".6" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function DemandIcon() {
+  return (
+    <svg className="h-[17px] w-[17px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2a10 10 0 1 0 10 10" />
+      <path d="M12 8v4l3 3" />
+      <path d="M18 2v4h4" />
+      <path d="M22 2l-4 4" />
     </svg>
   );
 }

@@ -14,6 +14,18 @@ export default function ChatClient({ senders }: { senders: ConversationSummary[]
   const [sending, setSending] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // silent refetch thread every 5s
+  useEffect(() => {
+    if (!selectedId) return;
+    const id = setInterval(() => {
+      fetch(`/api/logs?sender=${encodeURIComponent(selectedId)}`)
+        .then((r) => r.json())
+        .then((data) => setThread(data))
+        .catch(() => {});
+    }, 5000);
+    return () => clearInterval(id);
+  }, [selectedId]);
+
   const selected = senders.find((s) => s.sender_id === selectedId) ?? senders[0] ?? null;
 
   async function sendReply() {

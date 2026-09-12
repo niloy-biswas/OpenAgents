@@ -2,8 +2,18 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { Order, Product, RecoKpis } from "@/lib/db";
+import type { Order, Product, RecoKpis, InventoryKpis, WeeklyPoint, TopProduct } from "@/lib/db";
 import { cn } from "@/lib/utils";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 type OrderWithProduct = Order & { product_title: string };
 
@@ -25,10 +35,16 @@ export default function OverviewClient({
   orders,
   products,
   recoKpis,
+  invKpis,
+  weeklyChart,
+  topProducts,
 }: {
   orders: OrderWithProduct[];
   products: Product[];
   recoKpis: RecoKpis;
+  invKpis: InventoryKpis;
+  weeklyChart: WeeklyPoint[];
+  topProducts: TopProduct[];
 }) {
   const router = useRouter();
   const [confirming, setConfirming] = useState<number | null>(null);
@@ -74,6 +90,35 @@ export default function OverviewClient({
         <KpiCard label="Handled by bot" value="78%" delta="22% needed human" tone="neutral" />
       </div>
 
+      {/* Inventory — Strip 1: Stock position */}
+      <div>
+        <div className="text-[11px] uppercase tracking-widest text-oa-text-faint font-medium mb-2.5 ml-0.5">
+          Stock position
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <InvKpi label="Total SKUs" value={invKpis.totalSkus.toString()} />
+          <InvKpi label="Units on hand" value={invKpis.unitsOnHand.toLocaleString()} />
+          <InvKpi label="Inventory value" value={`৳${invKpis.inventoryValue.toLocaleString()}`} />
+          <InvKpi label="Retail value" value={`৳${invKpis.retailValue.toLocaleString()}`} />
+          <InvKpi label="Available to sell" value={invKpis.availableToSell.toLocaleString()} tone="up" />
+          <InvKpi label="Reserved" value={invKpis.reserved.toLocaleString()} tone={invKpis.reserved > 0 ? "warn" : "neutral"} />
+        </div>
+      </div>
+
+      {/* Inventory — Strip 2: Risk & velocity */}
+      <div>
+        <div className="text-[11px] uppercase tracking-widest text-oa-text-faint font-medium mb-2.5 ml-0.5">
+          Risk &amp; velocity
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          <InvKpi label="Incoming" value={invKpis.incoming.toLocaleString()} tone={invKpis.incoming > 0 ? "up" : "neutral"} />
+          <InvKpi label="Low stock SKUs" value={invKpis.lowStock.toString()} tone={invKpis.lowStock > 0 ? "warn" : "neutral"} />
+          <InvKpi label="Critical (< 3)" value={invKpis.critical.toString()} tone={invKpis.critical > 0 ? "down" : "neutral"} />
+          <InvKpi label="Out of stock" value={invKpis.outOfStock.toString()} tone={invKpis.outOfStock > 0 ? "down" : "neutral"} />
+          <InvKpi label="Dead stock SKUs" value={`${invKpis.deadStock} · ${invKpis.deadStockUnits} units`} tone={invKpis.deadStock > 0 ? "warn" : "neutral"} />
+        </div>
+      </div>
+
       {/* Advisor flip cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <FlipCard
@@ -116,6 +161,83 @@ export default function OverviewClient({
               : `৳${Math.round(recoKpis.impact).toLocaleString()} in potential revenue tied to open recommendations. Act to capture it.`,
           }}
         />
+      </div>
+
+      {/* Charts row */}
+      <div className="grid grid-cols-12 gap-5">
+        {/* Weekly orders vs revenue bar chart */}
+        <div className="col-span-12 xl:col-span-8 bg-oa-surface border border-oa-line-soft rounded-oa-lg p-5 hover:border-oa-line transition-colors">
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-2.5 text-sm font-semibold">
+              <svg className="h-4 w-4 text-oa-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <path d="M8 17V11M12 17V9M16 17v-4" />
+              </svg>
+              Weekly overview
+            </div>
+            <div className="text-xs text-oa-text-faint font-mono">Last 7 days</div>
+          </div>
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={weeklyChart} barGap={4}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" vertical={false} />
+              <XAxis dataKey="day" tick={{ fill: "#6b7280", fontSize: 11 }} axisLine={false} tickLine={false} />
+              <YAxis yAxisId="orders" orientation="left" tick={{ fill: "#6b7280", fontSize: 11 }} axisLine={false} tickLine={false} width={28} />
+              <YAxis yAxisId="revenue" orientation="right" tick={{ fill: "#6b7280", fontSize: 11 }} axisLine={false} tickLine={false} width={48} tickFormatter={(v) => `৳${(v / 1000).toFixed(0)}k`} />
+              <Tooltip
+                contentStyle={{ background: "#1a1d21", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", fontSize: 12 }}
+                labelStyle={{ color: "#9ca3af" }}
+                formatter={(value: number, name: string) =>
+                  name === "revenue" ? [`৳${value.toLocaleString()}`, "Revenue"] : [value, "Orders"]
+                }
+              />
+              <Legend wrapperStyle={{ fontSize: 11, color: "#6b7280", paddingTop: 8 }} />
+              <Bar yAxisId="orders" dataKey="orders" fill="#f59e0b" radius={[3, 3, 0, 0]} maxBarSize={32} name="Orders" />
+              <Bar yAxisId="revenue" dataKey="revenue" fill="#3b82f6" radius={[3, 3, 0, 0]} maxBarSize={32} name="Revenue" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Top 3 products */}
+        <div className="col-span-12 xl:col-span-4 bg-oa-surface border border-oa-line-soft rounded-oa-lg p-5 hover:border-oa-line transition-colors">
+          <div className="flex items-center gap-2.5 text-sm font-semibold mb-5">
+            <svg className="h-4 w-4 text-oa-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+              <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+              <path d="M4 22h16" />
+              <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+              <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+              <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+            </svg>
+            Top selling products
+          </div>
+          <div className="space-y-4">
+            {topProducts.map((p, i) => {
+              const maxUnits = topProducts[0]?.units ?? 1;
+              const pct = Math.round((p.units / maxUnits) * 100);
+              return (
+                <div key={p.title}>
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="text-[11px] font-mono text-oa-text-faint w-4 shrink-0">#{i + 1}</span>
+                      <span className="text-sm truncate">{p.title}</span>
+                    </div>
+                    <div className="text-xs font-mono text-oa-gold ml-2 shrink-0">{p.units} sold</div>
+                  </div>
+                  <div className="h-1.5 bg-oa-surface-raise rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all"
+                      style={{ width: `${pct}%`, background: i === 0 ? "#f59e0b" : i === 1 ? "#3b82f6" : "#6b7280" }}
+                    />
+                  </div>
+                  <div className="text-[10.5px] text-oa-text-faint font-mono mt-0.5">৳{p.revenue.toLocaleString()} revenue</div>
+                </div>
+              );
+            })}
+            {topProducts.length === 0 && (
+              <div className="text-sm text-oa-text-dim text-center py-8">No order data yet.</div>
+            )}
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-12 gap-5">
@@ -296,6 +418,33 @@ function FunnelStage({
       <div className="text-[11px] text-oa-text-faint font-mono mb-1">Stage {stage}</div>
       <div className="text-2xl font-semibold font-mono mb-1">{value}</div>
       <div className="text-xs text-oa-text-dim">{name}</div>
+    </div>
+  );
+}
+
+function InvKpi({
+  label,
+  value,
+  tone = "neutral",
+}: {
+  label: string;
+  value: string;
+  tone?: "neutral" | "warn" | "up" | "down";
+}) {
+  return (
+    <div className="bg-oa-surface border border-oa-line-soft rounded-oa-md px-3.5 py-3 hover:border-oa-line transition-colors">
+      <div className="text-[10.5px] text-oa-text-faint leading-tight">{label}</div>
+      <div
+        className={cn(
+          "text-[20px] font-semibold font-mono mt-1.5 tracking-tight leading-none",
+          tone === "up" ? "text-oa-green" :
+          tone === "down" ? "text-oa-red" :
+          tone === "warn" ? "text-oa-gold" :
+          "text-oa-text"
+        )}
+      >
+        {value}
+      </div>
     </div>
   );
 }
