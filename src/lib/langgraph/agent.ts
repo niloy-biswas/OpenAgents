@@ -160,7 +160,10 @@ async function sendReply(state: typeof AgentState.State) {
         product_id,
         quantity,
         sender_id: state.senderPsid,
-        address: { name, contact, address },
+        customer_name: name,
+        phone: contact,
+        channel: "messenger",
+        address: address ? { address } : undefined,
       });
     } catch (err) {
       console.error("[sendReply] createOrder failed:", err);
