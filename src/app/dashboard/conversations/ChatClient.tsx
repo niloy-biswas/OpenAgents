@@ -18,7 +18,7 @@ type Thread = {
 };
 
 function swatchSvg(code: string, color: string) {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><rect width="40" height="40" rx="10" fill="${color}"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="14" font-weight="600" fill="#14161c">${code.slice(0, 2).toUpperCase()}</text></svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><rect width="40" height="40" rx="10" fill="${color}"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="14" font-weight="600" fill="var(--oa-text)">${code.slice(0, 2).toUpperCase()}</text></svg>`;
   const b64 =
     typeof window !== "undefined"
       ? window.btoa(svg)
@@ -186,11 +186,11 @@ export default function ChatClient({
               <div
                 className={cn(
                   "max-w-[75%] rounded-oa-lg px-4 py-3 text-sm",
-                  m.role === "agent" ? "bg-oa-primary text-oa-bg rounded-br-none" : "bg-oa-surface-raise border border-oa-line rounded-bl-none"
+                  m.role === "agent" ? "bg-oa-primary text-white rounded-br-none" : "bg-oa-surface-raise border border-oa-line rounded-bl-none"
                 )}
               >
                 {m.text}
-                <div className={cn("text-[10px] mt-1.5 font-mono", m.role === "agent" ? "text-oa-bg/70" : "text-oa-text-faint")}>{m.time}</div>
+                <div className={cn("text-[10px] mt-1.5 font-mono", m.role === "agent" ? "text-white/70" : "text-oa-text-faint")}>{m.time}</div>
               </div>
             </div>
           ))}
@@ -213,7 +213,7 @@ export default function ChatClient({
             />
             <button
               onClick={() => send(input)}
-              className="bg-oa-primary text-oa-bg rounded-oa-md px-4 h-14 text-sm font-semibold hover:brightness-110 transition-all"
+              className="bg-oa-primary text-white rounded-oa-md px-4 h-14 text-sm font-semibold hover:brightness-110 transition-all"
             >
               Send
             </button>

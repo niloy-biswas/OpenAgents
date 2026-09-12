@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -35,6 +36,9 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-oa-bg p-4 relative overflow-hidden">
+      <div className="absolute top-4 right-4 z-10">
+        <ThemeToggle />
+      </div>
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] h-[40%] w-[40%] rounded-full bg-oa-primary/5 blur-[120px]" />
         <div className="absolute bottom-[-10%] right-[-10%] h-[40%] w-[40%] rounded-full bg-oa-blue/5 blur-[120px]" />
@@ -42,7 +46,7 @@ export default function LoginPage() {
 
       <div className="relative w-full max-w-[380px] bg-oa-surface border border-oa-line-soft rounded-oa-lg p-7 shadow-2xl">
         <div className="flex flex-col items-center mb-7">
-          <div className="h-11 w-11 rounded-[12px] bg-gradient-to-br from-oa-primary to-[#1d4ed8] flex items-center justify-center font-mono font-semibold text-xl text-oa-bg shadow-lg shadow-oa-primary/10">
+          <div className="h-11 w-11 rounded-[12px] bg-gradient-to-br from-oa-primary to-[#1d4ed8] flex items-center justify-center font-mono font-semibold text-xl text-white shadow-lg shadow-oa-primary/10">
             ৳
           </div>
           <h1 className="mt-4 text-xl font-semibold text-oa-text">OpenAgents Dashboard</h1>
@@ -82,7 +86,7 @@ export default function LoginPage() {
             type="submit"
             disabled={loading}
             className={cn(
-              "w-full bg-oa-primary text-oa-bg font-semibold text-sm py-2.5 rounded-oa-sm transition-all",
+              "w-full bg-oa-primary text-white font-semibold text-sm py-2.5 rounded-oa-sm transition-all",
               "hover:brightness-110 active:scale-[0.98]",
               loading && "opacity-60 cursor-not-allowed"
             )}

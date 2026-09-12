@@ -169,7 +169,7 @@ export default function AssistantClient() {
             {messages.map((m, i) => (
               <div key={i} className={cn("flex", m.role === "user" ? "justify-end" : "justify-start")}>
                 {m.role === "agent" && (
-                  <div className="h-8 w-8 rounded-lg bg-oa-primary text-oa-bg flex items-center justify-center mr-3 shrink-0">
+                  <div className="h-8 w-8 rounded-lg bg-oa-primary text-white flex items-center justify-center mr-3 shrink-0">
                     <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z" />
                     </svg>
@@ -190,7 +190,7 @@ export default function AssistantClient() {
 
             {loading && (
               <div className="flex justify-start">
-                <div className="h-8 w-8 rounded-lg bg-oa-primary text-oa-bg flex items-center justify-center mr-3 shrink-0">
+                <div className="h-8 w-8 rounded-lg bg-oa-primary text-white flex items-center justify-center mr-3 shrink-0">
                   <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z" />
                   </svg>
@@ -239,7 +239,7 @@ export default function AssistantClient() {
               <button
                 onClick={() => send(input)}
                 disabled={loading || !input.trim()}
-                className="bg-oa-primary text-oa-bg rounded-oa-md px-5 h-14 text-sm font-semibold hover:brightness-110 disabled:opacity-50 transition-all"
+                className="bg-oa-primary text-white rounded-oa-md px-5 h-14 text-sm font-semibold hover:brightness-110 disabled:opacity-50 transition-all"
               >
                 Send
               </button>

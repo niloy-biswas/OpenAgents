@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 type OnboardingState = {
   store_name: string;
@@ -184,7 +185,10 @@ export default function OnboardingClient() {
   }
 
   return (
-    <div className="min-h-screen bg-oa-bg text-oa-text flex items-center justify-center p-4">
+    <div className="min-h-screen bg-oa-bg text-oa-text flex items-center justify-center p-4 relative">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
       <div className="w-full max-w-2xl">
         {/* Progress */}
         <div className="mb-8">
@@ -212,7 +216,7 @@ export default function OnboardingClient() {
         <div className="bg-oa-surface border border-oa-line-soft rounded-oa-lg p-8">
           {step === 0 && (
             <div className="text-center space-y-5">
-              <div className="h-14 w-14 rounded-oa-md bg-gradient-to-br from-oa-primary to-[#1d4ed8] flex items-center justify-center mx-auto text-oa-bg font-mono font-bold text-2xl">
+              <div className="h-14 w-14 rounded-oa-md bg-gradient-to-br from-oa-primary to-[#1d4ed8] flex items-center justify-center mx-auto text-white font-mono font-bold text-2xl">
                 ৳
               </div>
               <h1 className="text-2xl font-semibold font-head">Build your AI store</h1>
@@ -226,7 +230,7 @@ export default function OnboardingClient() {
               </div>
               <button
                 onClick={() => setStep(1)}
-                className="bg-oa-primary text-oa-bg font-semibold text-sm px-6 py-2.5 rounded-oa-sm hover:brightness-110 transition-all"
+                className="bg-oa-primary text-white font-semibold text-sm px-6 py-2.5 rounded-oa-sm hover:brightness-110 transition-all"
               >
                 Get started
               </button>
@@ -365,7 +369,7 @@ export default function OnboardingClient() {
                 <button
                   onClick={uploadCatalog}
                   disabled={!file || saving}
-                  className="bg-oa-primary text-oa-bg font-semibold text-sm px-4 py-2 rounded-oa-sm hover:brightness-110 disabled:opacity-50 transition-all"
+                  className="bg-oa-primary text-white font-semibold text-sm px-4 py-2 rounded-oa-sm hover:brightness-110 disabled:opacity-50 transition-all"
                 >
                   {saving ? "Importing…" : "Import products"}
                 </button>
@@ -467,7 +471,7 @@ export default function OnboardingClient() {
               <button
                 onClick={finish}
                 disabled={saving}
-                className="bg-oa-primary text-oa-bg font-semibold text-sm px-6 py-2.5 rounded-oa-sm hover:brightness-110 disabled:opacity-50 transition-all"
+                className="bg-oa-primary text-white font-semibold text-sm px-6 py-2.5 rounded-oa-sm hover:brightness-110 disabled:opacity-50 transition-all"
               >
                 {saving ? "Finishing…" : "Go to dashboard"}
               </button>
@@ -534,7 +538,7 @@ function StepNav({
       <button
         onClick={onNext}
         disabled={saving}
-        className="bg-oa-primary text-oa-bg font-semibold text-sm px-5 py-2 rounded-oa-sm hover:brightness-110 disabled:opacity-50 transition-all"
+        className="bg-oa-primary text-white font-semibold text-sm px-5 py-2 rounded-oa-sm hover:brightness-110 disabled:opacity-50 transition-all"
       >
         {saving ? "Saving…" : nextLabel}
       </button>

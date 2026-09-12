@@ -201,7 +201,7 @@ export default function InventoryClient({ products: initialProducts }: { product
                   setEditing(null);
                   setModalOpen(true);
                 }}
-                className="bg-oa-primary text-oa-bg text-xs font-semibold px-3 py-2 rounded-oa-sm flex items-center gap-1.5 hover:brightness-110 transition-all"
+                className="bg-oa-primary text-white text-xs font-semibold px-3 py-2 rounded-oa-sm flex items-center gap-1.5 hover:brightness-110 transition-all"
               >
                 <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M12 5v14M5 12h14" />
@@ -504,7 +504,7 @@ function ProductModal({
                 variants: variants.filter((v) => v.label.trim()),
               })
             }
-            className="px-4 py-2 text-sm bg-oa-primary text-oa-bg rounded-oa-sm font-semibold hover:brightness-110"
+            className="px-4 py-2 text-sm bg-oa-primary text-white rounded-oa-sm font-semibold hover:brightness-110"
           >
             Save product
           </button>
@@ -650,7 +650,7 @@ function CsvImportModal({
             <button
               onClick={upload}
               disabled={importing || !file}
-              className="px-4 py-2 text-sm bg-oa-primary text-oa-bg rounded-oa-sm font-semibold hover:brightness-110 disabled:opacity-50"
+              className="px-4 py-2 text-sm bg-oa-primary text-white rounded-oa-sm font-semibold hover:brightness-110 disabled:opacity-50"
             >
               {importing ? "Importing…" : "Import products"}
             </button>
@@ -658,7 +658,7 @@ function CsvImportModal({
           {result && result.imported > 0 && (
             <button
               onClick={() => onComplete(result)}
-              className="px-4 py-2 text-sm bg-oa-primary text-oa-bg rounded-oa-sm font-semibold hover:brightness-110"
+              className="px-4 py-2 text-sm bg-oa-primary text-white rounded-oa-sm font-semibold hover:brightness-110"
             >
               Done
             </button>

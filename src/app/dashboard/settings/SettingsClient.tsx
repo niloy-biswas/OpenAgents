@@ -149,7 +149,7 @@ export default function SettingsClient({ initial }: { initial: Initial }) {
         <button
           onClick={save}
           disabled={saving}
-          className="bg-oa-primary text-oa-bg text-sm font-semibold px-4 py-2 rounded-oa-sm hover:brightness-110 transition-all disabled:opacity-60"
+          className="bg-oa-primary text-white text-sm font-semibold px-4 py-2 rounded-oa-sm hover:brightness-110 transition-all disabled:opacity-60"
         >
           {saving ? "Saving..." : "Save settings"}
         </button>
