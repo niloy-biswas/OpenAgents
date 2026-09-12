@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import type { Order } from "@/lib/db";
 
@@ -15,6 +15,11 @@ const STATUS_COLORS: Record<string, string> = {
 export default function OrdersClient({ orders }: { orders: OrderWithTitle[] }) {
   const router = useRouter();
   const [updating, setUpdating] = useState<number | null>(null);
+
+  useEffect(() => {
+    const id = setInterval(() => router.refresh(), 5000);
+    return () => clearInterval(id);
+  }, [router]);
 
   async function updateStatus(id: number, status: string) {
     setUpdating(id);
