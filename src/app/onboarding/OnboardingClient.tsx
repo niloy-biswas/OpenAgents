@@ -222,7 +222,7 @@ export default function OnboardingClient() {
               </div>
               <h1 className="text-2xl font-semibold font-head">Build your AI store</h1>
               <p className="text-sm text-oa-text-dim max-w-md mx-auto">
-                Connect your Facebook Page, import your catalog, and let OpenPage reply to customers, track stock, and surface insights automatically.
+                Connect your Facebook Page, import your catalog, and let OpenAgents reply to customers, track stock, and surface insights automatically.
               </p>
               <div className="grid grid-cols-3 gap-3 text-xs text-oa-text-dim pt-2">
                 <FeatureCard icon="🤖" text="Auto-reply on Messenger" />
@@ -467,7 +467,7 @@ export default function OnboardingClient() {
               </div>
               <h2 className="text-xl font-semibold">Your store is ready</h2>
               <p className="text-sm text-oa-text-dim">
-                {state.store_name || "Your store"} is set up. Customers can message your Facebook Page and OpenPage will reply automatically.
+                {state.store_name || "Your store"} is set up. Customers can message your Facebook Page and OpenAgents will reply automatically.
               </p>
               <button
                 onClick={finish}

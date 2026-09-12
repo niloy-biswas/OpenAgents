@@ -32,7 +32,7 @@ export async function GET() {
   return new Response(csv, {
     headers: {
       "Content-Type": "text/csv",
-      "Content-Disposition": 'attachment; filename="openpage-catalog-template.csv"',
+      "Content-Disposition": 'attachment; filename="openagents-catalog-template.csv"',
     },
   });
 }

@@ -22,7 +22,7 @@ const SUGGESTIONS = [
 
 const GREETING: Message = {
   role: "agent",
-  text: "Hi! I'm OpenPage Assistant. Ask me anything about your store, customers, or inventory.",
+  text: "Hi! I'm OpenAgents Assistant. Ask me anything about your store, customers, or inventory.",
 };
 
 function timeAgo(iso: string) {
@@ -126,7 +126,7 @@ export default function AssistantClient() {
         <div>
           <div className="flex items-center gap-2">
             <span className="h-2.5 w-2.5 rounded-full bg-oa-green animate-pulse-dot" />
-            <h1 className="text-lg font-semibold font-head">OpenPage Assistant</h1>
+            <h1 className="text-lg font-semibold font-head">OpenAgents Assistant</h1>
           </div>
           <p className="text-xs text-oa-text-dim mt-1">
             Business analyst powered by your live catalog, orders and inventory.

@@ -1,4 +1,4 @@
-# Social Media Selling Co-pilot
+# OpenAgents
 
 Built by **Team OpenAgents** at the AI Tinkerers "Agents, Everywhere" Global Hackathon, Dhaka — Sept 12, 2026.
 

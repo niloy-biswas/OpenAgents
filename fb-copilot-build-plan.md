@@ -1,6 +1,6 @@
-# OpenPage — Build Plan (Agents, Everywhere Hackathon, Sept 12)
+# OpenAgents — Build Plan (Agents, Everywhere Hackathon, Sept 12)
 
-**Team:** OpenAgents · **Project:** OpenPage
+**Team:** OpenAgents · **Project:** OpenAgents
 **This doc is self-contained** — everything needed to start building lives here, including the event logistics pulled from `hackathon-brief.md` (which stays in the `open-agents` planning folder and doesn't need to travel with this repo).
 
 ## Event Info
@@ -136,7 +136,7 @@ README.md          — public-facing, written for judges (see below)
 
 ## Submission Checklist (due 5:00 PM)
 
-1. **Title:** OpenPage
+1. **Title:** OpenAgents
 2. **Written description** — lead with the co-pilot/insight differentiator, name why the environment is essential, note advisory-not-autopilot design explicitly
 3. **Public GitHub repo** — fresh repo, commit history starts at the event, be ready to explain which parts were built during the hackathon
 4. **2-minute demo video** — script the flow in advance: (1) customer question → stock-aware grounded reply in Messenger, (2) a repeated question or complaint pattern → seller gets an advisory suggestion, (3) low-stock threshold hit → seller gets a restock alert, approves it. Record during the 3:30–4:30 show-and-tell block while the app is stable
