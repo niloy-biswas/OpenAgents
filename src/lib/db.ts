@@ -922,6 +922,11 @@ export async function listDemandProducts(): Promise<{ product_name: string; tota
   `;
 }
 
+export async function deleteDemandProduct(productName: string): Promise<void> {
+  if (!sql) return;
+  await sql`DELETE FROM demand_products WHERE product_name = ${productName}`;
+}
+
 // ─── Log queries ──────────────────────────────────────────────────────────────
 
 export interface FbContact {

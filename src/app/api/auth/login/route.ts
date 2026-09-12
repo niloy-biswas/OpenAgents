@@ -10,11 +10,6 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: "Invalid credentials" }, { status: 401 });
   }
 
-  // Demo always starts fresh.
-  if (account === "demo") {
-    await resetDemoStore();
-  }
-
   // Admin account gets realistic seed data if the store is empty.
   if (account === "admin") {
     await seedAdminStoreIfEmpty();
