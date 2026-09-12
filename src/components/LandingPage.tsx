@@ -97,7 +97,7 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
       <section id="product" className="border-y border-oa-line-soft bg-oa-sidebar">
         <div className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-oa-line-soft sm:grid-cols-4">
           <Signal label="Customer conversations" value="24/7" />
-          <Signal label="Languages" value="৩" />
+          <Signal label="Languages" value="3" />
           <Signal label="Order statuses" value="08" />
           <Signal label="Seller control" value="100%" />
         </div>
