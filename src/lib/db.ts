@@ -801,11 +801,48 @@ export async function resetDemoStore(): Promise<SettingsRow> {
 
 // ─── Log queries ──────────────────────────────────────────────────────────────
 
+export interface FbContact {
+  sender_id: string;
+  first_name: string | null;
+  last_name: string | null;
+  profile_pic: string | null;
+  fetched_at: Date;
+}
+
+export async function upsertFbContact(data: {
+  sender_id: string;
+  first_name: string | null;
+  last_name: string | null;
+  profile_pic: string | null;
+}): Promise<void> {
+  if (!sql) return;
+  await sql`
+    INSERT INTO fb_contacts (sender_id, first_name, last_name, profile_pic, fetched_at)
+    VALUES (${data.sender_id}, ${data.first_name}, ${data.last_name}, ${data.profile_pic}, NOW())
+    ON CONFLICT (sender_id) DO UPDATE
+      SET first_name  = EXCLUDED.first_name,
+          last_name   = EXCLUDED.last_name,
+          profile_pic = EXCLUDED.profile_pic,
+          fetched_at  = NOW()
+  `;
+}
+
+export async function getFbContact(senderId: string): Promise<FbContact | null> {
+  if (!sql) return null;
+  const rows = await sql<FbContact[]>`
+    SELECT * FROM fb_contacts WHERE sender_id = ${senderId}
+  `;
+  return rows[0] ?? null;
+}
+
 export interface ConversationSummary {
   sender_id: string;
   message_count: number;
   last_message: string;
   last_at: Date;
+  first_name: string | null;
+  last_name: string | null;
+  profile_pic: string | null;
 }
 
 export async function listConversationSenders(): Promise<ConversationSummary[]> {
@@ -824,19 +861,26 @@ export async function listConversationSenders(): Promise<ConversationSummary[]> 
           message_count: rows.length,
           last_message: rows[rows.length - 1].content,
           last_at: rows[rows.length - 1].created_at,
+          first_name: null,
+          last_name: null,
+          profile_pic: null,
         };
       })
       .sort((a, b) => +b.last_at - +a.last_at);
   }
   return sql<ConversationSummary[]>`
     SELECT
-      sender_id,
-      COUNT(*)::int           AS message_count,
-      (ARRAY_AGG(content ORDER BY created_at DESC))[1] AS last_message,
-      MAX(created_at)         AS last_at
-    FROM conversations
-    GROUP BY sender_id
-    ORDER BY MAX(created_at) DESC
+      c.sender_id,
+      COUNT(*)::int                                        AS message_count,
+      (ARRAY_AGG(c.content ORDER BY c.created_at DESC))[1] AS last_message,
+      MAX(c.created_at)                                    AS last_at,
+      f.first_name,
+      f.last_name,
+      f.profile_pic
+    FROM conversations c
+    LEFT JOIN fb_contacts f ON f.sender_id = c.sender_id
+    GROUP BY c.sender_id, f.first_name, f.last_name, f.profile_pic
+    ORDER BY MAX(c.created_at) DESC
   `;
 }
 

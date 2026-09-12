@@ -47,6 +47,14 @@ ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_status_check;
 ALTER TABLE orders ADD CONSTRAINT orders_status_check
   CHECK (status IN ('pending','called','confirmed','dispatched','delivered','returned','cancelled'));
 
+CREATE TABLE IF NOT EXISTS fb_contacts (
+  sender_id   TEXT        PRIMARY KEY,
+  first_name  TEXT,
+  last_name   TEXT,
+  profile_pic TEXT,
+  fetched_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS conversations (
   id          SERIAL PRIMARY KEY,
   sender_id   TEXT        NOT NULL,

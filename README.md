@@ -62,4 +62,4 @@ Push to GitHub → import to Vercel → add env vars → deploy. No separate pro
 
 ## Team
 
-Niloy · Rothi · Galib · Person D
+Niloy · Rothi · Galib · Moshiur

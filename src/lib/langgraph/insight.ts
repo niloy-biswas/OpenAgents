@@ -11,6 +11,8 @@ import {
   searchProducts,
   getOrderStats,
   searchOrders,
+  getProduct,
+  updateProduct,
   type OrderStatus,
 } from "../db";
 import { executeReadOnlyQuery, SCHEMA_DESCRIPTION } from "../readonly-db";
@@ -100,6 +102,33 @@ const tools = [
     }
   ),
   tool(
+    async ({ product_id, quantity }: { product_id: number; quantity: number }) => {
+      if (!Number.isInteger(quantity) || quantity < 0) {
+        return JSON.stringify({ error: "quantity must be a non-negative integer" });
+      }
+      const existing = await getProduct(product_id);
+      if (!existing) {
+        return JSON.stringify({ error: `No product with id ${product_id}` });
+      }
+      const updated = await updateProduct(product_id, { quantity });
+      return JSON.stringify({
+        id: updated!.id,
+        title: updated!.title,
+        previous_quantity: existing.quantity,
+        new_quantity: updated!.quantity,
+      });
+    },
+    {
+      name: "update_product_stock",
+      description:
+        "Set a product's stock quantity to an absolute value. Use for restocks or corrections the seller asks for (e.g. 'set X to 20 units', 'I just restocked Y with 15 more' — look up the current quantity first with search_products so you can add the delta, then call this with the new total). Always state the product name and the old/new quantity back to the seller after calling this.",
+      schema: z.object({
+        product_id: z.number().describe("The product's id, from search_products or list_low_stock_products"),
+        quantity: z.number().describe("The new absolute stock quantity"),
+      }),
+    }
+  ),
+  tool(
     async ({
       status,
       sender_id,
@@ -176,6 +205,8 @@ async function loadBusinessContext(state: typeof InsightState.State) {
 
   const systemContext = `${businessLine}
 Answer questions about sales, inventory, trends, and restocking. Call the tools available to you to look up live product and order data instead of guessing — combine multiple calls if a question needs it (e.g. revenue trend + low stock). Give actionable, data-driven answers, and flag low-stock items proactively when relevant.
+
+You can also update stock on the seller's behalf with update_product_stock — only when the seller explicitly asks for a stock change (a restock, a correction, "set X to N units"). Look the product up first (search_products / list_low_stock_products) to confirm you have the right id and current quantity, then call update_product_stock, then confirm back what changed. Never change stock unless the seller asked for it in this conversation.
 
 RESPONSE FORMAT
 - Always respond in Markdown.

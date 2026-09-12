@@ -35,6 +35,31 @@ export async function sendMessage(
   await post({ recipient: { id: recipientPsid }, message: { text } });
 }
 
+export interface FbProfile {
+  first_name: string | null;
+  last_name: string | null;
+  profile_pic: string | null;
+}
+
+export async function fetchFbProfile(psid: string): Promise<FbProfile | null> {
+  const token = await getPageToken();
+  if (!token) return null;
+  try {
+    const res = await fetch(
+      `https://graph.facebook.com/${psid}?fields=first_name,last_name,profile_pic&access_token=${token}`
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    return {
+      first_name: data.first_name ?? null,
+      last_name: data.last_name ?? null,
+      profile_pic: data.profile_pic ?? null,
+    };
+  } catch {
+    return null;
+  }
+}
+
 export async function sendImage(
   recipientPsid: string,
   imageUrl: string

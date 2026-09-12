@@ -8,10 +8,12 @@ import {
   saveMessage,
   createOrder,
   getSettings,
+  getFbContact,
+  upsertFbContact,
   type Product,
   type SettingsRow,
 } from "../db";
-import { sendMessage, sendImage } from "../messenger";
+import { sendMessage, sendImage, fetchFbProfile } from "../messenger";
 import { buildSalesAgentPrompt } from "./prompts";
 
 // ─── State ────────────────────────────────────────────────────────────────────
@@ -68,11 +70,19 @@ function getLLM(apiKey: string): ChatOpenAI {
 // ─── Nodes ────────────────────────────────────────────────────────────────────
 
 async function fetchContext(state: typeof AgentState.State) {
-  const [products, rawHistory, settings] = await Promise.all([
+  const [products, rawHistory, settings, existingContact] = await Promise.all([
     listProducts(),
     getConversationHistory(state.senderPsid, 10),
     getSettings(),
+    getFbContact(state.senderPsid),
   ]);
+
+  // fetch FB profile only if not cached yet
+  if (!existingContact) {
+    fetchFbProfile(state.senderPsid).then((profile) => {
+      if (profile) upsertFbContact({ sender_id: state.senderPsid, ...profile });
+    }).catch(() => {});
+  }
 
   const history: BaseMessage[] = rawHistory.map((m) =>
     m.role === "user" ? new HumanMessage(m.content) : new AIMessage(m.content)
@@ -160,7 +170,10 @@ async function sendReply(state: typeof AgentState.State) {
         product_id,
         quantity,
         sender_id: state.senderPsid,
-        address: { name, contact, address },
+        customer_name: name,
+        phone: contact,
+        channel: "messenger",
+        address: address ? { address } : undefined,
       });
     } catch (err) {
       console.error("[sendReply] createOrder failed:", err);
