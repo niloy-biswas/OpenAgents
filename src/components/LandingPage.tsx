@@ -22,11 +22,7 @@ const faqs = [
   ],
   [
     "How does stock stay accurate?",
-    "OpenAgents reads the same Google Sheet you already use for inventory. When a customer asks, the answer is based on the live quantity in your sheet, not a guess.",
-  ],
-  [
-    "Can I approve replies before they are sent?",
-    "Absolutely. It is built as a co-pilot, not an autopilot. Proactive suggestions and restock alerts are drafted for you to review and approve — nothing posts without your say.",
+    "OpenAgents reads the same Google Sheet you already use for inventory. When a customer asks, the answer is based on the live quantity in your dashboard, not a guess.",
   ],
   [
     "Does it collect orders or just answer questions?",
