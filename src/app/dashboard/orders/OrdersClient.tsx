@@ -144,11 +144,12 @@ export default function OrdersClient({
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[900px] text-sm">
+          <table className="w-full min-w-[1050px] text-sm">
             <thead className="border-b border-oa-line-soft text-xs text-oa-text-faint">
               <tr>
                 <th className="text-left px-5 py-3 font-medium">Order</th>
                 <th className="text-left px-5 py-3 font-medium">Customer</th>
+                <th className="text-left px-5 py-3 font-medium">Address</th>
                 <th className="text-left px-5 py-3 font-medium">Channel</th>
                 <th className="text-left px-5 py-3 font-medium">Total</th>
                 <th className="text-left px-5 py-3 font-medium">Date</th>
@@ -176,6 +177,15 @@ export default function OrdersClient({
                   <td className="px-5 py-3.5">
                     <div>{o.customer_name || "Unknown buyer"}</div>
                     <div className="text-[10.5px] text-oa-text-faint font-mono">{o.phone || o.sender_id}</div>
+                  </td>
+                  <td className="px-5 py-3.5 text-xs text-oa-text-faint max-w-[200px]">
+                    {(() => {
+                      const raw = o.address;
+                      if (!raw) return <span className="opacity-40">—</span>;
+                      const a = typeof raw === "string" ? (() => { try { return JSON.parse(raw); } catch { return {}; } })() : raw;
+                      const addr = a.address ?? Object.entries(a).filter(([k]) => k !== "name" && k !== "contact").map(([, v]) => v).join(", ");
+                      return addr || <span className="opacity-40">—</span>;
+                    })()}
                   </td>
                   <td className="px-5 py-3.5">
                     <span className="inline-flex items-center gap-1.5 bg-oa-surface-raise border border-oa-line rounded-full px-2.5 py-0.5 text-[11px]">
@@ -271,7 +281,7 @@ export default function OrdersClient({
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-5 py-10 text-center text-oa-text-dim text-sm">
+                  <td colSpan={8} className="px-5 py-10 text-center text-oa-text-dim text-sm">
                     No orders match this filter.
                   </td>
                 </tr>

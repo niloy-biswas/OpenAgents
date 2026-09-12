@@ -431,8 +431,8 @@ export async function listOrders(): Promise<(Order & { product_title: string })[
       .map((o) => ({ ...o, product_title: mockProducts.find((p) => p.id === o.product_id)?.title ?? "Unknown" }))
       .sort((a, b) => +b.order_at - +a.order_at);
   }
-  return sql<(Order & { product_title: string })[]>`
-    SELECT o.*, p.title AS product_title
+  return sql<(Order & { product_title: string; product_image: string | null })[]>`
+    SELECT o.*, p.title AS product_title, p.image_url AS product_image
     FROM orders o
     JOIN products p ON p.id = o.product_id
     ORDER BY o.order_at DESC
