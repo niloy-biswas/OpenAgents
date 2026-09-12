@@ -67,7 +67,8 @@ export default function DashboardLayout({
         )}
       >
         {/* Brand */}
-        <div
+        <Link
+          href="/"
           className={cn(
             "flex items-center py-5",
             collapsed ? "justify-center px-0" : "gap-2.5 px-2"
@@ -82,7 +83,7 @@ export default function DashboardLayout({
               <div className="text-[10.5px] text-oa-text-faint">Dashboard</div>
             </div>
           )}
-        </div>
+        </Link>
 
         {/* Navigation */}
         <nav className="flex flex-col gap-0.5">
