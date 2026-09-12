@@ -122,6 +122,16 @@ CREATE TABLE IF NOT EXISTS assistant_messages (
 
 CREATE INDEX IF NOT EXISTS assistant_messages_session_idx ON assistant_messages(session_id, created_at);
 
+-- The assistant session used when the owner texts the Telegram bot, so the
+-- Telegram thread and the dashboard's web Assistant chat are the same
+-- conversation (created lazily on first incoming Telegram message).
+ALTER TABLE settings ADD COLUMN IF NOT EXISTS telegram_session_id INTEGER REFERENCES assistant_sessions(id);
+
+-- Telegram's per-webhook secret_token, echoed back on every update as the
+-- X-Telegram-Bot-Api-Secret-Token header — lets the webhook route reject
+-- forged requests instead of trusting the chat_id alone.
+ALTER TABLE settings ADD COLUMN IF NOT EXISTS telegram_webhook_secret TEXT;
+
 -- Read-only role for the assistant's execute_query tool. SELECT-only on
 -- products/orders — no access to settings (holds plaintext API keys) or
 -- conversations. default_transaction_read_only blocks writes even if a grant

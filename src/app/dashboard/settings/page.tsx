@@ -171,7 +171,7 @@ export default function SettingsPage() {
     setTelegramTestResult({
       ok: data.ok,
       text: data.ok
-        ? `Connected to @${data.bot.username}`
+        ? `Connected to @${data.bot.username}${data.webhookRegistered ? " — now listening for your messages" : ""}`
         : data.error || "Connection failed",
     });
     if (data.ok) {

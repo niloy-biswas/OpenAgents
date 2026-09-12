@@ -658,6 +658,8 @@ export interface SettingsRow {
   telegram_bot_token: string | null;
   telegram_chat_id: string | null;
   telegram_connected: boolean;
+  telegram_session_id: number | null;
+  telegram_webhook_secret: string | null;
   onboarding_completed: boolean;
   business_name: string | null;
   product_type: string | null;
@@ -683,6 +685,8 @@ export async function getSettings(): Promise<SettingsRow> {
       telegram_bot_token: process.env.TELEGRAM_BOT_TOKEN || null,
       telegram_chat_id: process.env.TELEGRAM_CHAT_ID || null,
       telegram_connected: !!process.env.TELEGRAM_BOT_TOKEN && !!process.env.TELEGRAM_CHAT_ID,
+      telegram_session_id: null,
+      telegram_webhook_secret: process.env.TELEGRAM_WEBHOOK_SECRET || null,
       onboarding_completed: process.env.SETTINGS_ONBOARDING_COMPLETED === "true",
       business_name: process.env.SETTINGS_BUSINESS_NAME || null,
       product_type: process.env.SETTINGS_PRODUCT_TYPE || null,
@@ -722,6 +726,8 @@ export async function updateSettings(
       telegram_bot_token    = COALESCE(${data.telegram_bot_token ?? null}, telegram_bot_token),
       telegram_chat_id      = COALESCE(${data.telegram_chat_id ?? null}, telegram_chat_id),
       telegram_connected    = COALESCE(${data.telegram_connected ?? null}, telegram_connected),
+      telegram_session_id   = COALESCE(${data.telegram_session_id ?? null}, telegram_session_id),
+      telegram_webhook_secret = COALESCE(${data.telegram_webhook_secret ?? null}, telegram_webhook_secret),
       onboarding_completed  = COALESCE(${data.onboarding_completed ?? null}, onboarding_completed),
       business_name         = COALESCE(${data.business_name ?? null}, business_name),
       product_type          = COALESCE(${data.product_type ?? null}, product_type),
@@ -789,6 +795,8 @@ export async function resetDemoStore(): Promise<SettingsRow> {
       telegram_bot_token    = NULL,
       telegram_chat_id      = NULL,
       telegram_connected    = FALSE,
+      telegram_session_id   = NULL,
+      telegram_webhook_secret = NULL,
       onboarding_completed  = FALSE,
       updated_at            = NOW()
     WHERE id = 1
