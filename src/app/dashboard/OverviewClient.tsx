@@ -488,13 +488,18 @@ function FlipCard({
     <div className="cursor-pointer h-[150px]" style={{ perspective: "1200px" }} onClick={() => setFlipped((f) => !f)}>
       <div
         className="relative w-full h-full transition-transform duration-500"
-        style={{ transformStyle: "preserve-3d", transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}
+        style={{
+          transformStyle: "preserve-3d",
+          WebkitTransformStyle: "preserve-3d",
+          transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
+        }}
       >
         <div
           className={cn(
-            "absolute inset-0 rounded-oa-lg border p-5 flex flex-col backface-hidden",
+            "absolute inset-0 rounded-oa-lg border p-5 flex flex-col",
             urgent ? "border-oa-red bg-oa-surface shadow-[inset_0_0_0_1px_var(--oa-red)]" : "border-oa-line-soft bg-oa-surface hover:border-oa-line"
           )}
+          style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
         >
           <div className="text-[12.5px] text-oa-text-dim font-medium">{front.label}</div>
           <div className={cn("text-[30px] font-semibold font-mono mt-1", urgent ? "text-oa-red" : "text-oa-gold")}>{front.value}</div>
@@ -503,10 +508,15 @@ function FlipCard({
         </div>
         <div
           className={cn(
-            "absolute inset-0 rounded-oa-lg border p-5 flex flex-col justify-center gap-2 backface-hidden",
+            "absolute inset-0 rounded-oa-lg border p-5 flex flex-col justify-center gap-2",
             urgent ? "border-oa-red bg-oa-surface-raise" : "border-oa-line bg-oa-surface-raise"
           )}
-          style={{ transform: "rotateY(180deg)" }}
+          style={{
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
+            transform: "rotateY(180deg)",
+            WebkitTransform: "rotateY(180deg)",
+          }}
         >
           <div className={cn("text-xs font-semibold", urgent ? "text-oa-red" : "text-oa-gold")}>{back.heading}</div>
           <p className="text-xs text-oa-text-dim leading-relaxed">{back.body}</p>
