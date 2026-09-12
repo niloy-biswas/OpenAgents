@@ -835,6 +835,91 @@ export async function resetDemoStore(): Promise<SettingsRow> {
   return getSettings();
 }
 
+// ─── Inventory KPIs (computed from products + orders, no extra table) ────────
+
+export interface InventoryKpis {
+  // Strip 1 — stock position
+  totalSkus: number;
+  unitsOnHand: number;
+  inventoryValue: number;
+  retailValue: number;
+  availableToSell: number;
+  reserved: number;
+  // Strip 2 — risk & velocity
+  incoming: number;
+  lowStock: number;
+  critical: number;
+  outOfStock: number;
+  deadStock: number;
+  deadStockUnits: number;
+}
+
+export async function getInventoryKpis(): Promise<InventoryKpis> {
+  if (!sql) {
+    return {
+      totalSkus: 0, unitsOnHand: 0, inventoryValue: 0, retailValue: 0,
+      availableToSell: 0, reserved: 0, incoming: 0,
+      lowStock: 0, critical: 0, outOfStock: 0, deadStock: 0, deadStockUnits: 0,
+    };
+  }
+
+  const [prodRow, orderRow, deadRow] = await Promise.all([
+    sql<{ total_skus: string; units: string; inv_value: string; retail_value: string; low: string; crit: string; out: string }[]>`
+      SELECT
+        COUNT(*)::int                                     AS total_skus,
+        COALESCE(SUM(quantity), 0)                        AS units,
+        COALESCE(SUM(price * quantity * 0.7), 0)          AS inv_value,
+        COALESCE(SUM(price * quantity), 0)                AS retail_value,
+        COUNT(*) FILTER (WHERE quantity > 0 AND quantity < 5)  AS low,
+        COUNT(*) FILTER (WHERE quantity > 0 AND quantity < 3)  AS crit,
+        COUNT(*) FILTER (WHERE quantity = 0)                   AS out
+      FROM products
+    `,
+    sql<{ reserved: string; incoming: string }[]>`
+      SELECT
+        COALESCE(SUM(quantity) FILTER (WHERE status IN ('pending','called','confirmed')), 0) AS reserved,
+        COALESCE(SUM(quantity) FILTER (WHERE status = 'dispatched'), 0)                      AS incoming
+      FROM orders
+    `,
+    sql<{ dead_count: string; dead_units: string }[]>`
+      SELECT
+        COUNT(DISTINCT p.id)::int                    AS dead_count,
+        COALESCE(SUM(p.quantity), 0)                 AS dead_units
+      FROM products p
+      WHERE NOT EXISTS (
+        SELECT 1 FROM orders o
+        WHERE o.product_id = p.id
+          AND o.status = 'delivered'
+          AND o.order_at > NOW() - INTERVAL '60 days'
+      )
+      AND p.quantity > 0
+    `,
+  ]);
+
+  const p = prodRow[0];
+  const o = orderRow[0];
+  const d = deadRow[0];
+
+  const unitsOnHand   = Number(p?.units ?? 0);
+  const reserved      = Number(o?.reserved ?? 0);
+  const availableToSell = Math.max(0, unitsOnHand - reserved);
+
+  return {
+    totalSkus:       Number(p?.total_skus ?? 0),
+    unitsOnHand,
+    inventoryValue:  Math.round(Number(p?.inv_value ?? 0)),
+    retailValue:     Math.round(Number(p?.retail_value ?? 0)),
+    availableToSell,
+    reserved,
+    incoming:        Number(o?.incoming ?? 0),
+    lowStock:        Number(p?.low ?? 0),
+    critical:        Number(p?.crit ?? 0),
+    outOfStock:      Number(p?.out ?? 0),
+    deadStock:       Number(d?.dead_count ?? 0),
+    deadStockUnits:  Number(d?.dead_units ?? 0),
+  };
+}
+
 // ─── Recommendations (computed from products + orders, no extra table) ────────
 
 export interface RecoKpis {
@@ -925,6 +1010,65 @@ export async function listDemandProducts(): Promise<{ product_name: string; tota
 export async function deleteDemandProduct(productName: string): Promise<void> {
   if (!sql) return;
   await sql`DELETE FROM demand_products WHERE product_name = ${productName}`;
+}
+
+// ─── Chart data ───────────────────────────────────────────────────────────────
+
+export interface WeeklyPoint {
+  day: string;      // "Mon", "Tue", …
+  orders: number;
+  revenue: number;
+}
+
+export async function getWeeklyChart(): Promise<WeeklyPoint[]> {
+  if (!sql) return [];
+  const rows = await sql<{ day: string; orders: string; revenue: string }[]>`
+    SELECT
+      TO_CHAR(gs.d, 'Dy')                                              AS day,
+      COALESCE(COUNT(o.id), 0)                                         AS orders,
+      COALESCE(SUM(o.total_price), 0)                                  AS revenue
+    FROM generate_series(
+      DATE_TRUNC('day', NOW()) - INTERVAL '6 days',
+      DATE_TRUNC('day', NOW()),
+      INTERVAL '1 day'
+    ) AS gs(d)
+    LEFT JOIN orders o
+      ON DATE_TRUNC('day', o.order_at) = gs.d
+    GROUP BY gs.d
+    ORDER BY gs.d
+  `;
+  return rows.map((r) => ({
+    day: r.day,
+    orders: Number(r.orders),
+    revenue: Math.round(Number(r.revenue)),
+  }));
+}
+
+export interface TopProduct {
+  title: string;
+  units: number;
+  revenue: number;
+}
+
+export async function getTopProducts(limit = 3): Promise<TopProduct[]> {
+  if (!sql) return [];
+  const rows = await sql<{ title: string; units: string; revenue: string }[]>`
+    SELECT
+      p.title,
+      SUM(o.quantity)::int     AS units,
+      SUM(o.total_price)       AS revenue
+    FROM orders o
+    JOIN products p ON p.id = o.product_id
+    WHERE o.status NOT IN ('cancelled')
+    GROUP BY p.id, p.title
+    ORDER BY units DESC
+    LIMIT ${limit}
+  `;
+  return rows.map((r) => ({
+    title: r.title,
+    units: Number(r.units),
+    revenue: Math.round(Number(r.revenue)),
+  }));
 }
 
 // ─── Log queries ──────────────────────────────────────────────────────────────
