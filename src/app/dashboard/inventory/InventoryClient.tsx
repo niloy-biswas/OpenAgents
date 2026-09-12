@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Product, ProductVariant } from "@/lib/db";
 import { cn } from "@/lib/utils";
@@ -71,7 +71,20 @@ export default function InventoryClient({ products: initialProducts }: { product
   const [filter, setFilter] = useState<"all" | "critical" | "low" | "out">("all");
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
   const [editing, setEditing] = useState<Product | null>(null);
+
+  useEffect(() => {
+    setProducts(initialProducts);
+  }, [initialProducts]);
+
+  async function handleImportResult(result: { imported: number; products: Product[]; errors: { row: number; error: string }[] }) {
+    setImportOpen(false);
+    if (result.imported > 0) {
+      setProducts((prev) => [...result.products, ...prev]);
+      router.refresh();
+    }
+  }
 
   const filtered = useMemo(() => {
     return products.filter((p) => {
@@ -171,18 +184,31 @@ export default function InventoryClient({ products: initialProducts }: { product
               </svg>
               Product inventory
             </div>
-            <button
-              onClick={() => {
-                setEditing(null);
-                setModalOpen(true);
-              }}
-              className="bg-oa-gold text-oa-bg text-xs font-semibold px-3 py-2 rounded-oa-sm flex items-center gap-1.5 hover:brightness-110 transition-all"
-            >
-              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M12 5v14M5 12h14" />
-              </svg>
-              Add product
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setImportOpen(true)}
+                className="bg-oa-surface-raise border border-oa-line text-oa-text-dim text-xs font-semibold px-3 py-2 rounded-oa-sm flex items-center gap-1.5 hover:text-oa-text hover:border-oa-line-soft transition-all"
+              >
+                <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
+                  <path d="M7 11l5 5 5-5" />
+                  <path d="M12 4v12" />
+                </svg>
+                Import CSV
+              </button>
+              <button
+                onClick={() => {
+                  setEditing(null);
+                  setModalOpen(true);
+                }}
+                className="bg-oa-gold text-oa-bg text-xs font-semibold px-3 py-2 rounded-oa-sm flex items-center gap-1.5 hover:brightness-110 transition-all"
+              >
+                <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+                Add product
+              </button>
+            </div>
           </div>
 
           <div className="px-5 pb-3 flex flex-wrap gap-2">
@@ -319,6 +345,12 @@ export default function InventoryClient({ products: initialProducts }: { product
             setEditing(null);
           }}
           onSave={saveProduct}
+        />
+      )}
+      {importOpen && (
+        <CsvImportModal
+          onClose={() => setImportOpen(false)}
+          onComplete={handleImportResult}
         />
       )}
     </div>
@@ -476,6 +508,161 @@ function ProductModal({
           >
             Save product
           </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CsvImportModal({
+  onClose,
+  onComplete,
+}: {
+  onClose: () => void;
+  onComplete: (result: { imported: number; products: Product[]; errors: { row: number; error: string }[] }) => void;
+}) {
+  const [file, setFile] = useState<File | null>(null);
+  const [importing, setImporting] = useState(false);
+  const [result, setResult] = useState<{ imported: number; products: Product[]; errors: { row: number; error: string }[] } | null>(null);
+
+  async function upload() {
+    if (!file) return;
+    setImporting(true);
+    setResult(null);
+    const form = new FormData();
+    form.append("file", file);
+    const res = await fetch("/api/settings/catalog/import", { method: "POST", body: form });
+    const data = await res.json();
+    if (res.ok) {
+      setResult(data);
+    } else {
+      setResult({ imported: 0, products: [], errors: [{ row: 0, error: data.error || "Upload failed" }] });
+    }
+    setImporting(false);
+  }
+
+  function downloadTemplate() {
+    const columns = [
+      "title",
+      "sku",
+      "author",
+      "category",
+      "price",
+      "quantity",
+      "max_discount",
+      "image_url",
+      "swatch_color",
+      "swatch_code",
+      "variants",
+    ];
+    const example = [
+      "Classic Linen Shirt",
+      "CL-205",
+      "",
+      "Men's Wear",
+      "1100",
+      "8",
+      "0",
+      "",
+      "#5b8def",
+      "CL",
+      `[{"label":"M","stock":3},{"label":"L","stock":5}]`,
+    ];
+    const csv = [columns.join(","), example.map((v) => (v.includes(",") ? `"${v}"` : v)).join(",")].join("\n") + "\n";
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "product-import-template.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="bg-oa-surface border border-oa-line rounded-oa-lg w-full max-w-md max-h-[90vh] overflow-auto shadow-2xl">
+        <div className="flex items-center justify-between p-5 border-b border-oa-line-soft">
+          <div>
+            <div className="font-semibold">Import products from CSV</div>
+            <p className="text-xs text-oa-text-faint mt-0.5">Download the template, fill your products, then upload.</p>
+          </div>
+          <button onClick={onClose} className="text-oa-text-dim hover:text-oa-text">×</button>
+        </div>
+
+        <div className="p-5 space-y-5">
+          <div className="bg-oa-bg border border-oa-line-soft rounded-oa-md p-4 space-y-3">
+            <div className="text-xs text-oa-text-faint">1. Download the template</div>
+            <p className="text-[11px] text-oa-text-faint">
+              Required columns: <span className="text-oa-text-dim">title, price, quantity</span>. All other columns are optional.
+            </p>
+            <button
+              onClick={downloadTemplate}
+              className="bg-oa-surface-raise border border-oa-line text-oa-text-dim hover:text-oa-text hover:border-oa-line-soft text-xs px-3 py-2 rounded-oa-sm flex items-center gap-1.5 transition-colors"
+            >
+              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
+                <path d="M7 11l5 5 5-5" />
+                <path d="M12 4v12" />
+              </svg>
+              Download template
+            </button>
+          </div>
+
+          <div className="space-y-3">
+            <div className="text-xs text-oa-text-faint">2. Upload your CSV</div>
+            <input
+              type="file"
+              accept=".csv"
+              onChange={(e) => setFile(e.target.files?.[0] || null)}
+              className="block w-full text-xs text-oa-text-dim file:mr-3 file:py-2 file:px-3 file:rounded-oa-sm file:border-0 file:bg-oa-surface-raise file:text-oa-text hover:file:bg-oa-surface-hi file:transition-colors"
+            />
+            <div className="text-[10.5px] text-oa-text-faint font-mono bg-oa-bg border border-oa-line-soft rounded-oa-md p-3">
+              Supported columns: title, sku, author, category, price, quantity, max_discount, image_url, swatch_color, swatch_code, variants
+            </div>
+          </div>
+
+          {result && (
+            <div className="bg-oa-bg border border-oa-line-soft rounded-oa-md p-4 space-y-3 text-sm">
+              <div className={cn(result.imported > 0 ? "text-oa-green" : "text-oa-text-dim")}>
+                Imported {result.imported} product{result.imported === 1 ? "" : "s"}.
+              </div>
+              {result.errors.length > 0 && (
+                <div className="space-y-1">
+                  <div className="text-oa-red text-xs">Errors ({result.errors.length})</div>
+                  <ul className="max-h-40 overflow-y-auto text-[11px] text-oa-text-dim space-y-1">
+                    {result.errors.map((e, i) => (
+                      <li key={i}>Row {e.row}: {e.error}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className="p-5 border-t border-oa-line-soft flex justify-end gap-3">
+          <button onClick={onClose} className="px-4 py-2 text-sm border border-oa-line rounded-oa-sm hover:bg-oa-surface-hi">
+            {result && result.imported > 0 ? "Close" : "Cancel"}
+          </button>
+          {!result && (
+            <button
+              onClick={upload}
+              disabled={importing || !file}
+              className="px-4 py-2 text-sm bg-oa-gold text-oa-bg rounded-oa-sm font-semibold hover:brightness-110 disabled:opacity-50"
+            >
+              {importing ? "Importing…" : "Import products"}
+            </button>
+          )}
+          {result && result.imported > 0 && (
+            <button
+              onClick={() => onComplete(result)}
+              className="px-4 py-2 text-sm bg-oa-gold text-oa-bg rounded-oa-sm font-semibold hover:brightness-110"
+            >
+              Done
+            </button>
+          )}
         </div>
       </div>
     </div>

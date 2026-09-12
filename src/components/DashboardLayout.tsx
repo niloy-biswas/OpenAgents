@@ -54,7 +54,7 @@ export default function DashboardLayout({
     Orders: "Manage and confirm orders",
     Inventory: "Products, stock levels, variants",
     Assistant: "Ask anything about your business",
-    Settings: "Connect channels and import catalog",
+    Settings: "Connect channels, profile and Telegram",
   }[pageTitle];
 
   return (

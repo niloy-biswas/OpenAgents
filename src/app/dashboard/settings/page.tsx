@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
-type Tab = "channels" | "telegram" | "catalog" | "profile";
+type Tab = "channels" | "telegram" | "profile";
 
 type Settings = {
   store_name: string;
@@ -39,15 +39,6 @@ export default function SettingsPage() {
   const [telegramChatId, setTelegramChatId] = useState("");
   const [testingTelegram, setTestingTelegram] = useState(false);
   const [telegramTestResult, setTelegramTestResult] = useState<{ ok: boolean; text: string } | null>(null);
-
-  // catalog upload
-  const [file, setFile] = useState<File | null>(null);
-  const [importing, setImporting] = useState(false);
-  const [importResult, setImportResult] = useState<{
-    imported: number;
-    products: { id: number; title: string }[];
-    errors: { row: number; error: string }[];
-  } | null>(null);
 
   // connection test
   const [testing, setTesting] = useState(false);
@@ -180,25 +171,6 @@ export default function SettingsPage() {
     setTestingTelegram(false);
   }
 
-  async function uploadCatalog() {
-    if (!file) return;
-    setImporting(true);
-    setImportResult(null);
-    const form = new FormData();
-    form.append("file", file);
-    const res = await fetch("/api/settings/catalog/import", {
-      method: "POST",
-      body: form,
-    });
-    const data = await res.json();
-    if (res.ok) {
-      setImportResult(data);
-    } else {
-      setImportResult({ imported: 0, products: [], errors: [{ row: 0, error: data.error || "Upload failed" }] });
-    }
-    setImporting(false);
-  }
-
   function webhookUrl() {
     if (typeof window === "undefined") return "";
     return `${window.location.origin}/api/webhook`;
@@ -232,9 +204,6 @@ export default function SettingsPage() {
         </TabButton>
         <TabButton active={tab === "telegram"} onClick={() => setTab("telegram")}>
           Telegram
-        </TabButton>
-        <TabButton active={tab === "catalog"} onClick={() => setTab("catalog")}>
-          Catalog import
         </TabButton>
         <TabButton active={tab === "profile"} onClick={() => setTab("profile")}>
           Business profile
@@ -343,51 +312,6 @@ export default function SettingsPage() {
           {telegramTestResult && (
             <div className={cn("text-sm px-4 py-2.5 rounded-oa-md border", telegramTestResult.ok ? "bg-oa-green-dim text-oa-green border-oa-green/20" : "bg-oa-red-dim text-oa-red border-oa-red/20")}>
               {telegramTestResult.text}
-            </div>
-          )}
-        </div>
-      )}
-
-      {tab === "catalog" && (
-        <div className="bg-oa-surface border border-oa-line-soft rounded-oa-lg p-6 space-y-6">
-          <div>
-            <h2 className="text-base font-semibold">Import catalog</h2>
-            <p className="text-xs text-oa-text-faint mt-0.5">Upload a CSV with your products. Required columns: title, price, quantity.</p>
-          </div>
-
-          <div className="flex flex-col gap-4">
-            <label className="flex flex-col gap-2">
-              <span className="text-xs text-oa-text-faint">CSV file</span>
-              <input
-                type="file"
-                accept=".csv"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
-                className="block w-full text-xs text-oa-text-dim file:mr-3 file:py-2 file:px-3 file:rounded-oa-sm file:border-0 file:bg-oa-surface-raise file:text-oa-text hover:file:bg-oa-surface-hi file:transition-colors"
-              />
-            </label>
-            <div className="text-[10.5px] text-oa-text-faint font-mono bg-oa-bg border border-oa-line-soft rounded-oa-md p-3">
-              Supported columns: title, price, quantity, sku, category, image_url, swatch_color, swatch_code, variants
-            </div>
-            <button onClick={uploadCatalog} disabled={importing || !file} className="self-start bg-oa-gold text-oa-bg font-semibold text-sm px-4 py-2 rounded-oa-sm hover:brightness-110 disabled:opacity-50 transition-all">
-              {importing ? "Importing…" : "Import products"}
-            </button>
-          </div>
-
-          {importResult && (
-            <div className="bg-oa-bg border border-oa-line-soft rounded-oa-md p-4 space-y-3 text-sm">
-              <div className={cn(importResult.imported > 0 ? "text-oa-green" : "text-oa-text-dim")}>
-                Imported {importResult.imported} product{importResult.imported === 1 ? "" : "s"}.
-              </div>
-              {importResult.errors.length > 0 && (
-                <div className="space-y-1">
-                  <div className="text-oa-red text-xs">Errors ({importResult.errors.length})</div>
-                  <ul className="max-h-40 overflow-y-auto text-[11px] text-oa-text-dim space-y-1">
-                    {importResult.errors.map((e, i) => (
-                      <li key={i}>Row {e.row}: {e.error}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
             </div>
           )}
         </div>
