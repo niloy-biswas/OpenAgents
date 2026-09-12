@@ -799,6 +799,93 @@ export async function resetDemoStore(): Promise<SettingsRow> {
   return getSettings();
 }
 
+// ─── Recommendations (computed from products + orders, no extra table) ────────
+
+export interface RecoKpis {
+  open: number;
+  completed: number;
+  urgent: number;
+  impact: number;
+}
+
+export async function getRecoKpis(): Promise<RecoKpis> {
+  if (!sql) return { open: 0, completed: 0, urgent: 0, impact: 0 };
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const [prodRows, orderRows] = await Promise.all([
+    sql<{ low: string; critical: string }[]>`
+      SELECT
+        COUNT(*) FILTER (WHERE quantity > 0 AND quantity < 5)  AS low,
+        COUNT(*) FILTER (WHERE quantity < 3)                   AS critical
+      FROM products
+    `,
+    sql<{ pending_count: string; pending_impact: string; done_today: string }[]>`
+      SELECT
+        COUNT(*)          FILTER (WHERE status = 'pending')                          AS pending_count,
+        COALESCE(SUM(total_price) FILTER (WHERE status = 'pending'), 0)             AS pending_impact,
+        COUNT(*)          FILTER (WHERE status IN ('confirmed','delivered','dispatched')
+                                    AND order_at >= ${today})                        AS done_today
+      FROM orders
+    `,
+  ]);
+
+  const p = prodRows[0];
+  const o = orderRows[0];
+
+  const lowStock    = Number(p?.low ?? 0);
+  const critical    = Number(p?.critical ?? 0);
+  const pending     = Number(o?.pending_count ?? 0);
+  const impact      = Number(o?.pending_impact ?? 0);
+  const doneToday   = Number(o?.done_today ?? 0);
+
+  return {
+    open:      lowStock + pending,   // low-stock products + unconfirmed orders
+    completed: doneToday,            // confirmed/delivered today
+    urgent:    critical,             // stock < 3 (stockout imminent)
+    impact,                          // total value of pending orders
+  };
+}
+
+// ─── Demand products ──────────────────────────────────────────────────────────
+
+export interface DemandProduct {
+  id: number;
+  product_name: string;
+  sender_id: string;
+  request_count: number;
+  created_at: Date;
+}
+
+export async function addDemandProduct(
+  senderPsid: string,
+  productName: string
+): Promise<void> {
+  if (!sql) return;
+  const normalized = productName.trim().toLowerCase();
+  await sql`
+    INSERT INTO demand_products (product_name, sender_id, request_count)
+    VALUES (${normalized}, ${senderPsid}, 1)
+    ON CONFLICT (product_name, sender_id)
+    DO UPDATE SET request_count = demand_products.request_count + 1
+  `;
+}
+
+export async function listDemandProducts(): Promise<{ product_name: string; total_requests: number; unique_users: number; last_requested: Date }[]> {
+  if (!sql) return [];
+  return sql`
+    SELECT
+      product_name,
+      SUM(request_count)::int  AS total_requests,
+      COUNT(DISTINCT sender_id)::int AS unique_users,
+      MAX(created_at)          AS last_requested
+    FROM demand_products
+    GROUP BY product_name
+    ORDER BY total_requests DESC
+  `;
+}
+
 // ─── Log queries ──────────────────────────────────────────────────────────────
 
 export interface FbContact {

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { Order, Product } from "@/lib/db";
+import type { Order, Product, RecoKpis } from "@/lib/db";
 import { cn } from "@/lib/utils";
 
 type OrderWithProduct = Order & { product_title: string };
@@ -28,9 +28,11 @@ function orderCode(id: number) {
 export default function OverviewClient({
   orders,
   products,
+  recoKpis,
 }: {
   orders: OrderWithProduct[];
   products: Product[];
+  recoKpis: RecoKpis;
 }) {
   const router = useRouter();
   const [confirming, setConfirming] = useState<number | null>(null);
@@ -76,6 +78,50 @@ export default function OverviewClient({
         <KpiCard label="Handled by bot" value="78%" delta="22% needed human" tone="neutral" />
       </div>
 
+      {/* Advisor flip cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <FlipCard
+          front={{
+            label: "Actions recommended today",
+            value: recoKpis.open.toString(),
+            sub: `${recoKpis.completed} already completed`,
+          }}
+          back={{
+            heading: "Open Recommendations",
+            body: recoKpis.open === 0
+              ? "No open recommendations. All caught up!"
+              : `${recoKpis.open} actions need your attention. Visit the advisor to review and act on them.`,
+          }}
+        />
+        <FlipCard
+          urgent
+          front={{
+            label: "Urgent (stockout / cash)",
+            value: recoKpis.urgent.toString(),
+            sub: "Act within 24h",
+          }}
+          back={{
+            heading: "Urgent Actions",
+            body: recoKpis.urgent === 0
+              ? "No urgent issues right now."
+              : `${recoKpis.urgent} urgent recommendation${recoKpis.urgent > 1 ? "s" : ""} flagged — stockout risk or cash flow alert. Act today.`,
+          }}
+        />
+        <FlipCard
+          front={{
+            label: "Potential revenue impact",
+            value: `৳${Math.round(recoKpis.impact).toLocaleString()}`,
+            sub: "Across all open recommendations",
+          }}
+          back={{
+            heading: "Revenue at Stake",
+            body: recoKpis.impact === 0
+              ? "No estimated revenue impact on open items."
+              : `৳${Math.round(recoKpis.impact).toLocaleString()} in potential revenue tied to open recommendations. Act to capture it.`,
+          }}
+        />
+      </div>
+
       <div className="grid grid-cols-12 gap-5">
         {/* Confirmation funnel */}
         <div className="col-span-12 bg-oa-surface border border-oa-line-soft rounded-oa-lg p-5 hover:border-oa-line transition-colors">
@@ -97,86 +143,6 @@ export default function OverviewClient({
           </div>
         </div>
 
-        {/* Pending confirmation queue */}
-        <div className="col-span-12 xl:col-span-8 bg-oa-surface border border-oa-line-soft rounded-oa-lg p-5 hover:border-oa-line transition-colors">
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-2.5 text-sm font-semibold">
-              <svg className="h-4 w-4 text-oa-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.9.7 2.7a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.4-1.4a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.8 2z" />
-              </svg>
-              Call to confirm
-            </div>
-            <div className="text-xs text-oa-text-faint font-mono">{pendingOrders.length} waiting</div>
-          </div>
-
-          <div className="overflow-x-auto">
-            {pendingOrders.length === 0 ? (
-              <div className="text-sm text-oa-text-dim py-8 text-center">No pending confirmations.</div>
-            ) : (
-              <table className="w-full min-w-[700px] text-sm">
-                <tbody>
-                  {pendingOrders
-                    .sort((a, b) => (a.receive_score ?? 50) - (b.receive_score ?? 50))
-                    .map((o) => {
-                      const product = products.find((p) => p.id === o.product_id);
-                      const swatchColor = product?.swatch_color ?? "#5b8def";
-                      const code = product?.swatch_code ?? "??";
-                      const risk = riskFromScore(o.receive_score);
-                      const channel = o.channel?.toLowerCase() || "messenger";
-                      return (
-                        <tr key={o.id} className="border-b border-oa-line-soft last:border-0">
-                          <td className="py-3 pr-3">
-                            <div className="flex items-center gap-3">
-                              <div
-                                className="h-8 w-8 rounded-md flex items-center justify-center font-mono text-[10px] font-semibold text-oa-bg"
-                                style={{ background: swatchColor }}
-                              >
-                                {code}
-                              </div>
-                              <div>
-                                <div className="font-medium">{o.product_title}</div>
-                                <div className="text-[10.5px] text-oa-text-faint font-mono">
-                                  {orderCode(o.id)} · {formatDate(o.order_at)}
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="py-3 pr-3">
-                            <div className="flex items-center gap-2 text-oa-text-dim font-mono text-xs">
-                              {channel === "whatsapp" ? <WhatsappIcon /> : <FacebookIcon />}
-                              {o.sender_id}
-                            </div>
-                          </td>
-                          <td className="py-3 pr-3 font-mono text-oa-text">৳{Number(o.total_price).toLocaleString()}</td>
-                          <td className="py-3 pr-3">
-                            <span
-                              className={cn(
-                                "inline-block rounded-full px-2 py-0.5 text-[10.5px] font-mono",
-                                risk.level === "high" && "bg-oa-green-dim text-oa-green",
-                                risk.level === "mid" && "bg-oa-gold-soft text-oa-gold",
-                                risk.level === "low" && "bg-oa-red-dim text-oa-red"
-                              )}
-                            >
-                              {risk.label}
-                            </span>
-                          </td>
-                          <td className="py-3 text-right">
-                            <button
-                              onClick={() => confirmOrder(o.id)}
-                              disabled={confirming === o.id}
-                              className="inline-flex items-center gap-1.5 bg-oa-surface-raise hover:bg-oa-gold-dim hover:border-oa-gold border border-oa-line rounded-oa-sm px-3 py-1.5 text-xs transition-colors disabled:opacity-50"
-                            >
-                              {confirming === o.id ? "Confirming…" : "Confirm"}
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                </tbody>
-              </table>
-            )}
-          </div>
-        </div>
 
         {/* Low stock alerts */}
         <div className="col-span-12 xl:col-span-4 bg-oa-surface border border-oa-line-soft rounded-oa-lg p-5 hover:border-oa-line transition-colors">
@@ -221,6 +187,65 @@ export default function OverviewClient({
               <div className="text-sm text-oa-text-dim text-center py-4">No low stock alerts.</div>
             )}
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FlipCard({
+  front,
+  back,
+  urgent = false,
+}: {
+  front: { label: string; value: string; sub: string };
+  back: { heading: string; body: string };
+  urgent?: boolean;
+}) {
+  const [flipped, setFlipped] = useState(false);
+  return (
+    <div
+      className="cursor-pointer"
+      style={{ perspective: "800px" }}
+      onClick={() => setFlipped((f) => !f)}
+    >
+      <div
+        style={{
+          transition: "transform 0.45s",
+          transformStyle: "preserve-3d",
+          transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
+          position: "relative",
+          minHeight: "110px",
+        }}
+      >
+        {/* Front */}
+        <div
+          className={cn(
+            "absolute inset-0 bg-oa-surface border rounded-oa-md p-4 hover:border-oa-line transition-colors",
+            urgent ? "border-oa-red/40" : "border-oa-line-soft"
+          )}
+          style={{ backfaceVisibility: "hidden" }}
+        >
+          <div className="text-xs text-oa-text-faint">{front.label}</div>
+          <div className={cn("text-[28px] font-semibold font-mono mt-2 tracking-tight", urgent ? "text-oa-red" : "text-oa-gold")}>
+            {front.value}
+          </div>
+          <div className="text-[11px] text-oa-text-faint mt-1.5">{front.sub}</div>
+          <div className="text-[10px] text-oa-text-faint mt-2 opacity-50">Click to flip ↩</div>
+        </div>
+        {/* Back */}
+        <div
+          className={cn(
+            "absolute inset-0 bg-oa-surface-raise border rounded-oa-md p-4",
+            urgent ? "border-oa-red/40" : "border-oa-line"
+          )}
+          style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+        >
+          <div className={cn("text-xs font-semibold mb-2", urgent ? "text-oa-red" : "text-oa-gold")}>
+            {back.heading}
+          </div>
+          <p className="text-[12px] text-oa-text-dim leading-relaxed">{back.body}</p>
+          <div className="text-[10px] text-oa-text-faint mt-3 opacity-50">Click to flip back ↩</div>
         </div>
       </div>
     </div>

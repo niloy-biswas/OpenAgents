@@ -96,6 +96,15 @@ ALTER TABLE settings ADD COLUMN IF NOT EXISTS openai_api_key TEXT;
 
 ALTER TABLE conversations ADD COLUMN IF NOT EXISTS image_url TEXT;
 
+CREATE TABLE IF NOT EXISTS demand_products (
+  id            SERIAL PRIMARY KEY,
+  product_name  TEXT        NOT NULL,
+  sender_id     TEXT        NOT NULL,
+  request_count INTEGER     NOT NULL DEFAULT 1,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (product_name, sender_id)
+);
+
 CREATE TABLE IF NOT EXISTS assistant_sessions (
   id          SERIAL PRIMARY KEY,
   title       TEXT,
