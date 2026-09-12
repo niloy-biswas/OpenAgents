@@ -861,6 +861,9 @@ export async function listConversationSenders(): Promise<ConversationSummary[]> 
           message_count: rows.length,
           last_message: rows[rows.length - 1].content,
           last_at: rows[rows.length - 1].created_at,
+          first_name: null,
+          last_name: null,
+          profile_pic: null,
         };
       })
       .sort((a, b) => +b.last_at - +a.last_at);
