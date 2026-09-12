@@ -74,7 +74,7 @@ export default function DashboardLayout({
             collapsed ? "justify-center px-0" : "gap-2.5 px-2"
           )}
         >
-          <div className="h-[30px] w-[30px] rounded-[9px] bg-gradient-to-br from-oa-gold to-[#c97d1e] flex items-center justify-center font-mono font-semibold text-[15px] text-oa-bg shrink-0">
+          <div className="h-[30px] w-[30px] rounded-[9px] bg-gradient-to-br from-oa-primary to-[#1d4ed8] flex items-center justify-center font-mono font-semibold text-[15px] text-oa-bg shrink-0">
             ৳
           </div>
           {!collapsed && (
@@ -119,7 +119,7 @@ export default function DashboardLayout({
                 {active && (
                   <span
                     className={cn(
-                      "absolute top-2 bottom-2 w-[3px] rounded-full bg-oa-gold",
+                      "absolute top-2 bottom-2 w-[3px] rounded-full bg-oa-primary",
                       collapsed ? "left-0" : "-left-3.5"
                     )}
                   />

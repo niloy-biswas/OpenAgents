@@ -67,7 +67,7 @@ export default function SettingsClient({ initial }: { initial: Initial }) {
                 value={businessName}
                 onChange={(e) => setBusinessName(e.target.value)}
                 placeholder="e.g. Reader's Nook"
-                className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-gold"
+                className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-primary"
               />
             </div>
             <div>
@@ -76,7 +76,7 @@ export default function SettingsClient({ initial }: { initial: Initial }) {
                 value={productType}
                 onChange={(e) => setProductType(e.target.value)}
                 placeholder="e.g. English books"
-                className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-gold"
+                className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-primary"
               />
             </div>
           </div>
@@ -87,7 +87,7 @@ export default function SettingsClient({ initial }: { initial: Initial }) {
               onChange={(e) => setToneInstructions(e.target.value)}
               rows={3}
               placeholder="e.g. Address customers respectfully as apu/bhaiya, keep replies warm and concise."
-              className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-gold resize-none"
+              className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-primary resize-none"
             />
             <p className="text-[11px] text-oa-text-faint mt-1">
               Shown to the agent as guidance for how to address customers and phrase replies.
@@ -112,7 +112,7 @@ export default function SettingsClient({ initial }: { initial: Initial }) {
               value={fbVerifyToken}
               onChange={(e) => setFbVerifyToken(e.target.value)}
               placeholder="Any string you choose — paste the same value into Meta's webhook setup"
-              className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm font-mono outline-none focus:border-oa-gold"
+              className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm font-mono outline-none focus:border-oa-primary"
             />
             <p className="text-[11px] text-oa-text-faint mt-1">
               Falls back to the server&apos;s <span className="font-mono">FB_VERIFY_TOKEN</span> env var if left blank.
@@ -124,7 +124,7 @@ export default function SettingsClient({ initial }: { initial: Initial }) {
               value={fbToken}
               onChange={(e) => setFbToken(e.target.value)}
               placeholder="Paste a new Page access token to replace it"
-              className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm font-mono outline-none focus:border-oa-gold"
+              className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm font-mono outline-none focus:border-oa-primary"
             />
             <p className="text-[11px] text-oa-text-faint mt-1">
               Falls back to the server&apos;s <span className="font-mono">FB_PAGE_ACCESS_TOKEN</span> env var if left as-is.
@@ -136,7 +136,7 @@ export default function SettingsClient({ initial }: { initial: Initial }) {
               value={openaiKey}
               onChange={(e) => setOpenaiKey(e.target.value)}
               placeholder="Paste a new key to replace it"
-              className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm font-mono outline-none focus:border-oa-gold"
+              className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm font-mono outline-none focus:border-oa-primary"
             />
             <p className="text-[11px] text-oa-text-faint mt-1">
               Falls back to the server&apos;s <span className="font-mono">OPENAI_API_KEY</span> env var if left as-is.
@@ -149,7 +149,7 @@ export default function SettingsClient({ initial }: { initial: Initial }) {
         <button
           onClick={save}
           disabled={saving}
-          className="bg-oa-gold text-oa-bg text-sm font-semibold px-4 py-2 rounded-oa-sm hover:brightness-110 transition-all disabled:opacity-60"
+          className="bg-oa-primary text-oa-bg text-sm font-semibold px-4 py-2 rounded-oa-sm hover:brightness-110 transition-all disabled:opacity-60"
         >
           {saving ? "Saving..." : "Save settings"}
         </button>

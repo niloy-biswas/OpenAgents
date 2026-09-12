@@ -201,7 +201,7 @@ export default function InventoryClient({ products: initialProducts }: { product
                   setEditing(null);
                   setModalOpen(true);
                 }}
-                className="bg-oa-gold text-oa-bg text-xs font-semibold px-3 py-2 rounded-oa-sm flex items-center gap-1.5 hover:brightness-110 transition-all"
+                className="bg-oa-primary text-oa-bg text-xs font-semibold px-3 py-2 rounded-oa-sm flex items-center gap-1.5 hover:brightness-110 transition-all"
               >
                 <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M12 5v14M5 12h14" />
@@ -239,7 +239,7 @@ export default function InventoryClient({ products: initialProducts }: { product
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search products"
-              className="ml-auto bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-1.5 text-xs outline-none focus:border-oa-gold"
+              className="ml-auto bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-1.5 text-xs outline-none focus:border-oa-primary"
             />
           </div>
 
@@ -315,7 +315,7 @@ export default function InventoryClient({ products: initialProducts }: { product
                               setEditing(p);
                               setModalOpen(true);
                             }}
-                            className="ml-1 text-[11px] bg-oa-surface-raise border border-oa-line rounded-oa-sm px-2.5 py-1 hover:bg-oa-gold-dim hover:border-oa-gold transition-colors"
+                            className="ml-1 text-[11px] bg-oa-surface-raise border border-oa-line rounded-oa-sm px-2.5 py-1 hover:bg-oa-primary-dim hover:border-oa-primary transition-colors"
                           >
                             Manage
                           </button>
@@ -411,21 +411,21 @@ function ProductModal({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-[11px] text-oa-text-faint mb-1">Product name</label>
-              <input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-gold" />
+              <input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-primary" />
             </div>
             <div>
               <label className="block text-[11px] text-oa-text-faint mb-1">SKU</label>
-              <input value={sku} onChange={(e) => setSku(e.target.value)} className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-gold" />
+              <input value={sku} onChange={(e) => setSku(e.target.value)} className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-primary" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-[11px] text-oa-text-faint mb-1">Author</label>
-              <input value={author} onChange={(e) => setAuthor(e.target.value)} className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-gold" />
+              <input value={author} onChange={(e) => setAuthor(e.target.value)} className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-primary" />
             </div>
             <div>
               <label className="block text-[11px] text-oa-text-faint mb-1">Category</label>
-              <input value={category} onChange={(e) => setCategory(e.target.value)} list="cats" className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-gold" />
+              <input value={category} onChange={(e) => setCategory(e.target.value)} list="cats" className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-primary" />
               <datalist id="cats">
                 <option value="Men's Wear" />
                 <option value="Women's Wear" />
@@ -438,7 +438,7 @@ function ProductModal({
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="block text-[11px] text-oa-text-faint mb-1">Unit price (৳)</label>
-              <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-gold" />
+              <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-primary" />
             </div>
             <div>
               <label className="block text-[11px] text-oa-text-faint mb-1">
@@ -449,27 +449,27 @@ function ProductModal({
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
                 disabled={variants.filter((v) => v.label.trim()).length > 0}
-                className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-gold disabled:opacity-50"
+                className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-primary disabled:opacity-50"
               />
             </div>
             <div>
               <label className="block text-[11px] text-oa-text-faint mb-1">Max discount (৳)</label>
-              <input type="number" value={maxDiscount} onChange={(e) => setMaxDiscount(e.target.value)} className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-gold" />
+              <input type="number" value={maxDiscount} onChange={(e) => setMaxDiscount(e.target.value)} className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-primary" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-[11px] text-oa-text-faint mb-1">Swatch color</label>
-              <input value={color} onChange={(e) => setColor(e.target.value)} className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-gold" />
+              <input value={color} onChange={(e) => setColor(e.target.value)} className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-primary" />
             </div>
             <div>
               <label className="block text-[11px] text-oa-text-faint mb-1">Swatch code (2 letters)</label>
-              <input value={code} onChange={(e) => setCode(e.target.value)} maxLength={2} className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-gold" />
+              <input value={code} onChange={(e) => setCode(e.target.value)} maxLength={2} className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-primary" />
             </div>
           </div>
           <div>
             <label className="block text-[11px] text-oa-text-faint mb-1">Image URL (optional)</label>
-            <input value={image} onChange={(e) => setImage(e.target.value)} className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-gold" />
+            <input value={image} onChange={(e) => setImage(e.target.value)} className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm outline-none focus:border-oa-primary" />
           </div>
           <div>
             <label className="block text-[11px] text-oa-text-faint mb-1">Variants</label>
@@ -480,7 +480,7 @@ function ProductModal({
                 <button onClick={() => removeVariant(i)} className="text-oa-red px-2">Remove</button>
               </div>
             ))}
-            <button onClick={addVariant} className="w-full border border-dashed border-oa-line text-oa-text-dim rounded-oa-sm py-2 text-xs hover:border-oa-gold hover:text-oa-gold transition-colors">
+            <button onClick={addVariant} className="w-full border border-dashed border-oa-line text-oa-text-dim rounded-oa-sm py-2 text-xs hover:border-oa-primary hover:text-oa-primary transition-colors">
               + Add variant
             </button>
           </div>
@@ -504,7 +504,7 @@ function ProductModal({
                 variants: variants.filter((v) => v.label.trim()),
               })
             }
-            className="px-4 py-2 text-sm bg-oa-gold text-oa-bg rounded-oa-sm font-semibold hover:brightness-110"
+            className="px-4 py-2 text-sm bg-oa-primary text-oa-bg rounded-oa-sm font-semibold hover:brightness-110"
           >
             Save product
           </button>
@@ -650,7 +650,7 @@ function CsvImportModal({
             <button
               onClick={upload}
               disabled={importing || !file}
-              className="px-4 py-2 text-sm bg-oa-gold text-oa-bg rounded-oa-sm font-semibold hover:brightness-110 disabled:opacity-50"
+              className="px-4 py-2 text-sm bg-oa-primary text-oa-bg rounded-oa-sm font-semibold hover:brightness-110 disabled:opacity-50"
             >
               {importing ? "Importing…" : "Import products"}
             </button>
@@ -658,7 +658,7 @@ function CsvImportModal({
           {result && result.imported > 0 && (
             <button
               onClick={() => onComplete(result)}
-              className="px-4 py-2 text-sm bg-oa-gold text-oa-bg rounded-oa-sm font-semibold hover:brightness-110"
+              className="px-4 py-2 text-sm bg-oa-primary text-oa-bg rounded-oa-sm font-semibold hover:brightness-110"
             >
               Done
             </button>

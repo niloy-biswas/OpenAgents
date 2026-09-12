@@ -30,8 +30,12 @@ the brand mark.
 | `--text` | `#ece8de` | Primary text (warm off-white, receipt-paper tone) |
 | `--text-dim` | `#9195a3` | Secondary text |
 | `--text-faint` | `#666b78` | Meta / timestamps / labels |
-| `--gold` | `#e8a33d` | **Only** brand / primary-action color |
-| `--gold-dim` bg | `#6b551f` / `#3d3320` | Gold hover fill / "called" status tint |
+| `--primary` | `#3b82f6` | **Only** brand / primary-action / trust color |
+| `--primary-dim` | `#1e3a8a` | Primary hover fill / active tint |
+| `--primary-soft` | `#172554` | Primary soft background |
+| `--gold` | `#e8a33d` | Signal: attention / pending / warning |
+| `--gold-dim` | `#6b551f` | Gold hover fill / "called" status tint |
+| `--gold-soft` | `#3d3320` | Gold soft background |
 | `--green` | `#3fae7a` | Signal: confirmed, delivered, healthy |
 | `--green-dim` | `#1f3d31` | Green tinted background |
 | `--red` | `#d1435b` | Signal: risk, low stock, returned |
@@ -39,10 +43,11 @@ the brand mark.
 | `--blue` | `#5b8def` | Signal: informational / "new" state |
 | `--blue-dim` | `#202b42` | Blue tinted background |
 
-**Rule:** gold is the *only* brand/CTA color. Green / red / blue are never
-decorative — they exist purely to signal status (good / bad / neutral-new).
-If a new widget needs a fourth signal color, don't add one casually — first
-check whether an existing status genuinely applies.
+**Rule:** blue (`--primary`) is the *only* brand/CTA/trust color. Gold is now
+reserved for attention / pending / warning states. Green / red / blue (`--blue`)
+are never decorative — they exist purely to signal status (good / bad /
+neutral-new). If a new widget needs another color, first check whether an
+existing status genuinely applies.
 
 ## 3. Typography
 
@@ -117,8 +122,9 @@ labels, no tracked-out eyebrows, no arrow-suffixed link text.
 
 When adding a new page or widget:
 1. Reuse an existing component class before inventing a new one.
-2. New status/signal colors must map to green (good) / gold (attention,
-   brand) / red (bad) / blue (neutral-new) — don't add a 5th signal hue.
+2. New status/signal colors must map to green (good) / primary-blue (brand/trust)
+   / gold (attention/warning) / red (bad) / blue (neutral-new) — don't add a 5th
+   signal hue.
 2. Numbers → IBM Plex Mono. Everything else → Space Grotesk.
 3. Keep the sidebar/topbar shell identical; only `.content` / view sections
    change between pages (see the `showView()` pattern in the existing JS for

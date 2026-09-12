@@ -31,9 +31,9 @@ like it belongs to the same product.
    patterns** without checking `design.md`'s rules section first — the whole
    point of this skill is to stop drift across pages.
 4. When genuinely new UI is needed (a component with no existing analog),
-   design it in the same idiom: dark charcoal surface, gold as the only
-   brand/CTA accent, green/red/blue reserved strictly for status, numbers in
-   IBM Plex Mono, everything else in Space Grotesk.
+    design it in the same idiom: dark charcoal surface, blue (`--primary`) as
+    the only brand/CTA/trust accent, green/red/gold/blue reserved strictly for
+    status, numbers in IBM Plex Mono, everything else in Space Grotesk.
 5. Ground all sample data in the real subject matter (Bangladeshi f-commerce:
    ৳ currency, FB/WhatsApp channels, Pathao/Steadfast/RedX delivery, real
    product categories like Panjabi/Saree/Frock) — never generic placeholder

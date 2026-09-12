@@ -150,7 +150,7 @@ export default function ChatClient({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium truncate">{t.name}</span>
-                    {t.unread && !isActive && <span className="h-2 w-2 rounded-full bg-oa-gold animate-pulse-dot" />}
+                    {t.unread && !isActive && <span className="h-2 w-2 rounded-full bg-oa-primary animate-pulse-dot" />}
                   </div>
                   <div className="text-[11px] text-oa-text-faint truncate">{t.product}</div>
                   <div className="flex items-center gap-1.5 mt-1">
@@ -186,7 +186,7 @@ export default function ChatClient({
               <div
                 className={cn(
                   "max-w-[75%] rounded-oa-lg px-4 py-3 text-sm",
-                  m.role === "agent" ? "bg-oa-gold text-oa-bg rounded-br-none" : "bg-oa-surface-raise border border-oa-line rounded-bl-none"
+                  m.role === "agent" ? "bg-oa-primary text-oa-bg rounded-br-none" : "bg-oa-surface-raise border border-oa-line rounded-bl-none"
                 )}
               >
                 {m.text}
@@ -209,11 +209,11 @@ export default function ChatClient({
                 }
               }}
               placeholder="Type a reply…"
-              className="flex-1 bg-oa-surface border border-oa-line-soft rounded-oa-md px-4 py-3 text-sm outline-none focus:border-oa-gold resize-none h-14"
+              className="flex-1 bg-oa-surface border border-oa-line-soft rounded-oa-md px-4 py-3 text-sm outline-none focus:border-oa-primary resize-none h-14"
             />
             <button
               onClick={() => send(input)}
-              className="bg-oa-gold text-oa-bg rounded-oa-md px-4 h-14 text-sm font-semibold hover:brightness-110 transition-all"
+              className="bg-oa-primary text-oa-bg rounded-oa-md px-4 h-14 text-sm font-semibold hover:brightness-110 transition-all"
             >
               Send
             </button>
@@ -222,7 +222,7 @@ export default function ChatClient({
             <button
               onClick={askAI}
               disabled={suggesting || !input.trim()}
-              className="text-[11px] flex items-center gap-1.5 text-oa-text-dim hover:text-oa-gold disabled:opacity-50"
+              className="text-[11px] flex items-center gap-1.5 text-oa-text-dim hover:text-oa-primary disabled:opacity-50"
             >
               <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                 <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z" />

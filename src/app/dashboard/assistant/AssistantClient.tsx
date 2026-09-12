@@ -134,7 +134,7 @@ export default function AssistantClient() {
         </div>
         <button
           onClick={newChat}
-          className="text-xs font-medium bg-oa-surface-raise border border-oa-line rounded-oa-sm px-3 py-2 hover:border-oa-gold hover:text-oa-gold transition-colors shrink-0"
+          className="text-xs font-medium bg-oa-surface-raise border border-oa-line rounded-oa-sm px-3 py-2 hover:border-oa-primary hover:text-oa-primary transition-colors shrink-0"
         >
           + New chat
         </button>
@@ -169,7 +169,7 @@ export default function AssistantClient() {
             {messages.map((m, i) => (
               <div key={i} className={cn("flex", m.role === "user" ? "justify-end" : "justify-start")}>
                 {m.role === "agent" && (
-                  <div className="h-8 w-8 rounded-lg bg-oa-gold text-oa-bg flex items-center justify-center mr-3 shrink-0">
+                  <div className="h-8 w-8 rounded-lg bg-oa-primary text-oa-bg flex items-center justify-center mr-3 shrink-0">
                     <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z" />
                     </svg>
@@ -190,7 +190,7 @@ export default function AssistantClient() {
 
             {loading && (
               <div className="flex justify-start">
-                <div className="h-8 w-8 rounded-lg bg-oa-gold text-oa-bg flex items-center justify-center mr-3 shrink-0">
+                <div className="h-8 w-8 rounded-lg bg-oa-primary text-oa-bg flex items-center justify-center mr-3 shrink-0">
                   <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z" />
                   </svg>
@@ -212,7 +212,7 @@ export default function AssistantClient() {
                 <button
                   key={s}
                   onClick={() => send(s)}
-                  className="text-xs bg-oa-surface-raise border border-oa-line rounded-full px-3 py-1.5 hover:border-oa-gold hover:text-oa-gold transition-colors"
+                  className="text-xs bg-oa-surface-raise border border-oa-line rounded-full px-3 py-1.5 hover:border-oa-primary hover:text-oa-primary transition-colors"
                 >
                   {s}
                 </button>
@@ -234,12 +234,12 @@ export default function AssistantClient() {
                   }
                 }}
                 placeholder="Ask anything about your store…"
-                className="flex-1 bg-oa-surface border border-oa-line-soft rounded-oa-md px-4 py-3 text-sm outline-none focus:border-oa-gold resize-none h-14"
+                className="flex-1 bg-oa-surface border border-oa-line-soft rounded-oa-md px-4 py-3 text-sm outline-none focus:border-oa-primary resize-none h-14"
               />
               <button
                 onClick={() => send(input)}
                 disabled={loading || !input.trim()}
-                className="bg-oa-gold text-oa-bg rounded-oa-md px-5 h-14 text-sm font-semibold hover:brightness-110 disabled:opacity-50 transition-all"
+                className="bg-oa-primary text-oa-bg rounded-oa-md px-5 h-14 text-sm font-semibold hover:brightness-110 disabled:opacity-50 transition-all"
               >
                 Send
               </button>

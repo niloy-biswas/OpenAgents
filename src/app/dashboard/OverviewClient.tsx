@@ -164,7 +164,7 @@ export default function OverviewClient({
                             <button
                               onClick={() => confirmOrder(o.id)}
                               disabled={confirming === o.id}
-                              className="inline-flex items-center gap-1.5 bg-oa-surface-raise hover:bg-oa-gold-dim hover:border-oa-gold border border-oa-line rounded-oa-sm px-3 py-1.5 text-xs transition-colors disabled:opacity-50"
+                              className="inline-flex items-center gap-1.5 bg-oa-surface-raise hover:bg-oa-primary-dim hover:border-oa-primary border border-oa-line rounded-oa-sm px-3 py-1.5 text-xs transition-colors disabled:opacity-50"
                             >
                               {confirming === o.id ? "Confirming…" : "Confirm"}
                             </button>

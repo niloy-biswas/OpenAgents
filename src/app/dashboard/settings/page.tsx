@@ -242,7 +242,7 @@ export default function SettingsPage() {
               <code className="flex-1 bg-oa-surface-raise border border-oa-line rounded-oa-sm px-3 py-2 text-xs font-mono text-oa-text-dim truncate">
                 {webhookUrl()}
               </code>
-              <button onClick={copyWebhook} className="bg-oa-surface-raise border border-oa-line hover:border-oa-gold text-oa-text-dim hover:text-oa-gold rounded-oa-sm px-3 py-2 text-xs transition-colors">
+              <button onClick={copyWebhook} className="bg-oa-surface-raise border border-oa-line hover:border-oa-primary text-oa-text-dim hover:text-oa-primary rounded-oa-sm px-3 py-2 text-xs transition-colors">
                 Copy
               </button>
             </div>
@@ -250,7 +250,7 @@ export default function SettingsPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <button onClick={saveChannels} disabled={saving} className="bg-oa-gold text-oa-bg font-semibold text-sm px-4 py-2 rounded-oa-sm hover:brightness-110 disabled:opacity-50 transition-all">
+            <button onClick={saveChannels} disabled={saving} className="bg-oa-primary text-oa-bg font-semibold text-sm px-4 py-2 rounded-oa-sm hover:brightness-110 disabled:opacity-50 transition-all">
               {saving ? "Saving…" : "Save channel settings"}
             </button>
             <button onClick={testConnection} disabled={testing} className="bg-oa-surface-raise border border-oa-line text-oa-text-dim hover:text-oa-text hover:border-oa-line-soft text-sm px-4 py-2 rounded-oa-sm transition-colors disabled:opacity-50">
@@ -301,7 +301,7 @@ export default function SettingsPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <button onClick={saveTelegram} disabled={saving} className="bg-oa-gold text-oa-bg font-semibold text-sm px-4 py-2 rounded-oa-sm hover:brightness-110 disabled:opacity-50 transition-all">
+            <button onClick={saveTelegram} disabled={saving} className="bg-oa-primary text-oa-bg font-semibold text-sm px-4 py-2 rounded-oa-sm hover:brightness-110 disabled:opacity-50 transition-all">
               {saving ? "Saving…" : "Save Telegram settings"}
             </button>
             <button onClick={testTelegram} disabled={testingTelegram || !telegramBotToken} className="bg-oa-surface-raise border border-oa-line text-oa-text-dim hover:text-oa-text hover:border-oa-line-soft text-sm px-4 py-2 rounded-oa-sm transition-colors disabled:opacity-50">
@@ -332,7 +332,7 @@ export default function SettingsPage() {
                 value={welcomeMessage}
                 onChange={(e) => setWelcomeMessage(e.target.value)}
                 rows={3}
-                className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm text-oa-text outline-none focus:border-oa-gold resize-none"
+                className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm text-oa-text outline-none focus:border-oa-primary resize-none"
                 placeholder="Welcome! How can I help you today?"
               />
             </div>
@@ -342,7 +342,7 @@ export default function SettingsPage() {
                 <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
-                  className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm text-oa-text outline-none focus:border-oa-gold"
+                  className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm text-oa-text outline-none focus:border-oa-primary"
                 >
                   <option value="bangla">Bangla</option>
                   <option value="english">English</option>
@@ -353,7 +353,7 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <button onClick={saveProfile} disabled={saving} className="bg-oa-gold text-oa-bg font-semibold text-sm px-4 py-2 rounded-oa-sm hover:brightness-110 disabled:opacity-50 transition-all">
+          <button onClick={saveProfile} disabled={saving} className="bg-oa-primary text-oa-bg font-semibold text-sm px-4 py-2 rounded-oa-sm hover:brightness-110 disabled:opacity-50 transition-all">
             {saving ? "Saving…" : "Save profile"}
           </button>
         </div>
@@ -405,7 +405,7 @@ function Input({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm text-oa-text placeholder:text-oa-text-faint outline-none focus:border-oa-gold"
+        className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm text-oa-text placeholder:text-oa-text-faint outline-none focus:border-oa-primary"
       />
     </div>
   );

@@ -14,6 +14,9 @@
   --oa-text: #ece8de;
   --oa-text-dim: #9195a3;
   --oa-text-faint: #666b78;
+  --oa-primary: #3b82f6;
+  --oa-primary-dim: #1e3a8a;
+  --oa-primary-soft: #172554;
   --oa-gold: #e8a33d;
   --oa-gold-dim: #6b551f;
   --oa-gold-soft: #3d3320;
@@ -35,7 +38,7 @@
     -webkit-font-smoothing: antialiased;
   }
   ::selection {
-    @apply bg-oa-gold text-oa-bg;
+    @apply bg-oa-primary text-oa-bg;
   }
 }
 

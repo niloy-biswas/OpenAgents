@@ -190,14 +190,14 @@ export default function OnboardingClient() {
         <div className="mb-8">
           <div className="flex items-center justify-between text-xs text-oa-text-faint mb-2">
             {STEPS.map((label, i) => (
-              <span key={label} className={cn(i === step ? "text-oa-gold font-medium" : i < step ? "text-oa-text-dim" : "")}>
+              <span key={label} className={cn(i === step ? "text-oa-primary font-medium" : i < step ? "text-oa-text-dim" : "")}>
                 {label}
               </span>
             ))}
           </div>
           <div className="h-1.5 bg-oa-surface-raise rounded-full overflow-hidden">
             <div
-              className="h-full bg-oa-gold transition-all"
+              className="h-full bg-oa-primary transition-all"
               style={{ width: `${(step / (STEPS.length - 1)) * 100}%` }}
             />
           </div>
@@ -212,7 +212,7 @@ export default function OnboardingClient() {
         <div className="bg-oa-surface border border-oa-line-soft rounded-oa-lg p-8">
           {step === 0 && (
             <div className="text-center space-y-5">
-              <div className="h-14 w-14 rounded-oa-md bg-gradient-to-br from-oa-gold to-[#c97d1e] flex items-center justify-center mx-auto text-oa-bg font-mono font-bold text-2xl">
+              <div className="h-14 w-14 rounded-oa-md bg-gradient-to-br from-oa-primary to-[#1d4ed8] flex items-center justify-center mx-auto text-oa-bg font-mono font-bold text-2xl">
                 ৳
               </div>
               <h1 className="text-2xl font-semibold font-head">Build your AI store</h1>
@@ -226,7 +226,7 @@ export default function OnboardingClient() {
               </div>
               <button
                 onClick={() => setStep(1)}
-                className="bg-oa-gold text-oa-bg font-semibold text-sm px-6 py-2.5 rounded-oa-sm hover:brightness-110 transition-all"
+                className="bg-oa-primary text-oa-bg font-semibold text-sm px-6 py-2.5 rounded-oa-sm hover:brightness-110 transition-all"
               >
                 Get started
               </button>
@@ -244,7 +244,7 @@ export default function OnboardingClient() {
                   value={state.welcome_message}
                   onChange={(e) => update("welcome_message", e.target.value)}
                   rows={3}
-                  className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm text-oa-text outline-none focus:border-oa-gold resize-none"
+                  className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm text-oa-text outline-none focus:border-oa-primary resize-none"
                   placeholder="Welcome! How can I help you today?"
                 />
               </div>
@@ -254,7 +254,7 @@ export default function OnboardingClient() {
                   <select
                     value={state.language}
                     onChange={(e) => update("language", e.target.value)}
-                    className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm text-oa-text outline-none focus:border-oa-gold"
+                    className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm text-oa-text outline-none focus:border-oa-primary"
                   >
                     <option value="bangla">Bangla</option>
                     <option value="english">English</option>
@@ -295,7 +295,7 @@ export default function OnboardingClient() {
                   <code className="flex-1 bg-oa-surface-raise border border-oa-line rounded-oa-sm px-3 py-2 text-xs font-mono text-oa-text-dim truncate">
                     {webhookUrl()}
                   </code>
-                  <button onClick={copyWebhook} className="bg-oa-surface-raise border border-oa-line hover:border-oa-gold text-oa-text-dim hover:text-oa-gold rounded-oa-sm px-3 py-2 text-xs transition-colors">
+                  <button onClick={copyWebhook} className="bg-oa-surface-raise border border-oa-line hover:border-oa-primary text-oa-text-dim hover:text-oa-primary rounded-oa-sm px-3 py-2 text-xs transition-colors">
                     Copy
                   </button>
                 </div>
@@ -343,7 +343,7 @@ export default function OnboardingClient() {
                 <a
                   href="/api/onboarding/template"
                   download
-                  className="inline-flex items-center gap-2 bg-oa-surface-raise border border-oa-line text-oa-text-dim hover:text-oa-text hover:border-oa-gold rounded-oa-sm px-4 py-2 text-sm transition-colors"
+                  className="inline-flex items-center gap-2 bg-oa-surface-raise border border-oa-line text-oa-text-dim hover:text-oa-text hover:border-oa-primary rounded-oa-sm px-4 py-2 text-sm transition-colors"
                 >
                   <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -365,7 +365,7 @@ export default function OnboardingClient() {
                 <button
                   onClick={uploadCatalog}
                   disabled={!file || saving}
-                  className="bg-oa-gold text-oa-bg font-semibold text-sm px-4 py-2 rounded-oa-sm hover:brightness-110 disabled:opacity-50 transition-all"
+                  className="bg-oa-primary text-oa-bg font-semibold text-sm px-4 py-2 rounded-oa-sm hover:brightness-110 disabled:opacity-50 transition-all"
                 >
                   {saving ? "Importing…" : "Import products"}
                 </button>
@@ -467,7 +467,7 @@ export default function OnboardingClient() {
               <button
                 onClick={finish}
                 disabled={saving}
-                className="bg-oa-gold text-oa-bg font-semibold text-sm px-6 py-2.5 rounded-oa-sm hover:brightness-110 disabled:opacity-50 transition-all"
+                className="bg-oa-primary text-oa-bg font-semibold text-sm px-6 py-2.5 rounded-oa-sm hover:brightness-110 disabled:opacity-50 transition-all"
               >
                 {saving ? "Finishing…" : "Go to dashboard"}
               </button>
@@ -509,7 +509,7 @@ function Input({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm text-oa-text placeholder:text-oa-text-faint outline-none focus:border-oa-gold"
+        className="w-full bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-sm text-oa-text placeholder:text-oa-text-faint outline-none focus:border-oa-primary"
       />
     </div>
   );
@@ -534,7 +534,7 @@ function StepNav({
       <button
         onClick={onNext}
         disabled={saving}
-        className="bg-oa-gold text-oa-bg font-semibold text-sm px-5 py-2 rounded-oa-sm hover:brightness-110 disabled:opacity-50 transition-all"
+        className="bg-oa-primary text-oa-bg font-semibold text-sm px-5 py-2 rounded-oa-sm hover:brightness-110 disabled:opacity-50 transition-all"
       >
         {saving ? "Saving…" : nextLabel}
       </button>
