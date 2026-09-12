@@ -3,7 +3,7 @@ import postgres from "postgres";
 // ─── DB client (falls back to in-memory mock when DATABASE_URL is missing) ─────
 
 const databaseUrl = process.env.DATABASE_URL;
-const sql: ReturnType<typeof postgres> | null = databaseUrl ? postgres(databaseUrl) : null;
+const sql: ReturnType<typeof postgres> | null = databaseUrl ? postgres(databaseUrl, { prepare: false }) : null;
 
 if (!sql) {
   console.warn("[db] DATABASE_URL not set — using in-memory mock store for local preview");
@@ -45,6 +45,7 @@ export type OrderStatus =
 
 export interface Order {
   id: number;
+  order_code: string;
   product_id: number;
   quantity: number;
   total_price: number;
@@ -91,6 +92,7 @@ const mockAssistantSessions: AssistantSession[] = [];
 const mockAssistantMessages: AssistantMessage[] = [];
 let nextProductId = 1;
 let nextOrderId = 1;
+const mockOrderCode = (id: number) => `TRX-${String(id).padStart(3, "0")}`;
 let nextConvId = 1;
 let nextAssistantSessionId = 1;
 let nextAssistantMessageId = 1;
@@ -174,7 +176,8 @@ function seedMock() {
 
   mockOrders.push(
     {
-      id: nextOrderId++,
+      id: nextOrderId,
+      order_code: mockOrderCode(nextOrderId++),
       product_id: 1,
       quantity: 1,
       total_price: 1650,
@@ -189,7 +192,8 @@ function seedMock() {
       address: null,
     },
     {
-      id: nextOrderId++,
+      id: nextOrderId,
+      order_code: mockOrderCode(nextOrderId++),
       product_id: 2,
       quantity: 2,
       total_price: 2200,
@@ -204,7 +208,8 @@ function seedMock() {
       address: null,
     },
     {
-      id: nextOrderId++,
+      id: nextOrderId,
+      order_code: mockOrderCode(nextOrderId++),
       product_id: 1,
       quantity: 1,
       total_price: 1650,
@@ -219,7 +224,8 @@ function seedMock() {
       address: null,
     },
     {
-      id: nextOrderId++,
+      id: nextOrderId,
+      order_code: mockOrderCode(nextOrderId++),
       product_id: 3,
       quantity: 1,
       total_price: 3200,
@@ -442,6 +448,27 @@ export async function getOrder(id: number): Promise<Order | null> {
   return rows[0] ?? null;
 }
 
+// Accepts whatever shape a human might type for the order_code column —
+// "TRX-012", "trx-12", "#TRX-12", or just "12" — normalized to the
+// zero-padded form the column actually stores (see schema.sql's generated
+// column: 'TRX-' || LPAD(id::text, 3, '0')).
+export function normalizeOrderCode(ref: string): string | null {
+  const digits = ref.match(/\d+/)?.[0];
+  if (!digits) return null;
+  return `TRX-${digits.padStart(3, "0")}`;
+}
+
+export async function getOrderByCode(ref: string): Promise<Order | null> {
+  const code = normalizeOrderCode(ref);
+  if (!code) return null;
+  if (!sql) {
+    seedMock();
+    return mockOrders.find((o) => o.order_code === code) ?? null;
+  }
+  const rows = await sql<Order[]>`SELECT * FROM orders WHERE order_code = ${code}`;
+  return rows[0] ?? null;
+}
+
 export async function createOrder(data: {
   product_id: number;
   quantity: number;
@@ -456,7 +483,8 @@ export async function createOrder(data: {
   if (!product) throw new Error(`Product ${data.product_id} not found`);
   const total = product.price * data.quantity;
   const order: Order = {
-    id: nextOrderId++,
+    id: nextOrderId,
+    order_code: mockOrderCode(nextOrderId++),
     product_id: data.product_id,
     quantity: data.quantity,
     total_price: total,
@@ -658,6 +686,8 @@ export interface SettingsRow {
   telegram_bot_token: string | null;
   telegram_chat_id: string | null;
   telegram_connected: boolean;
+  telegram_session_id: number | null;
+  telegram_webhook_secret: string | null;
   onboarding_completed: boolean;
   business_name: string | null;
   product_type: string | null;
@@ -683,6 +713,8 @@ export async function getSettings(): Promise<SettingsRow> {
       telegram_bot_token: process.env.TELEGRAM_BOT_TOKEN || null,
       telegram_chat_id: process.env.TELEGRAM_CHAT_ID || null,
       telegram_connected: !!process.env.TELEGRAM_BOT_TOKEN && !!process.env.TELEGRAM_CHAT_ID,
+      telegram_session_id: null,
+      telegram_webhook_secret: process.env.TELEGRAM_WEBHOOK_SECRET || null,
       onboarding_completed: process.env.SETTINGS_ONBOARDING_COMPLETED === "true",
       business_name: process.env.SETTINGS_BUSINESS_NAME || null,
       product_type: process.env.SETTINGS_PRODUCT_TYPE || null,
@@ -722,6 +754,8 @@ export async function updateSettings(
       telegram_bot_token    = COALESCE(${data.telegram_bot_token ?? null}, telegram_bot_token),
       telegram_chat_id      = COALESCE(${data.telegram_chat_id ?? null}, telegram_chat_id),
       telegram_connected    = COALESCE(${data.telegram_connected ?? null}, telegram_connected),
+      telegram_session_id   = COALESCE(${data.telegram_session_id ?? null}, telegram_session_id),
+      telegram_webhook_secret = COALESCE(${data.telegram_webhook_secret ?? null}, telegram_webhook_secret),
       onboarding_completed  = COALESCE(${data.onboarding_completed ?? null}, onboarding_completed),
       business_name         = COALESCE(${data.business_name ?? null}, business_name),
       product_type          = COALESCE(${data.product_type ?? null}, product_type),
@@ -789,6 +823,8 @@ export async function resetDemoStore(): Promise<SettingsRow> {
       telegram_bot_token    = NULL,
       telegram_chat_id      = NULL,
       telegram_connected    = FALSE,
+      telegram_session_id   = NULL,
+      telegram_webhook_secret = NULL,
       onboarding_completed  = FALSE,
       updated_at            = NOW()
     WHERE id = 1
@@ -797,6 +833,93 @@ export async function resetDemoStore(): Promise<SettingsRow> {
   await sql`TRUNCATE TABLE products, orders, conversations RESTART IDENTITY`;
 
   return getSettings();
+}
+
+// ─── Recommendations (computed from products + orders, no extra table) ────────
+
+export interface RecoKpis {
+  open: number;
+  completed: number;
+  urgent: number;
+  impact: number;
+}
+
+export async function getRecoKpis(): Promise<RecoKpis> {
+  if (!sql) return { open: 0, completed: 0, urgent: 0, impact: 0 };
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const [prodRows, orderRows] = await Promise.all([
+    sql<{ low: string; critical: string }[]>`
+      SELECT
+        COUNT(*) FILTER (WHERE quantity > 0 AND quantity < 5)  AS low,
+        COUNT(*) FILTER (WHERE quantity < 3)                   AS critical
+      FROM products
+    `,
+    sql<{ pending_count: string; pending_impact: string; done_today: string }[]>`
+      SELECT
+        COUNT(*)          FILTER (WHERE status = 'pending')                          AS pending_count,
+        COALESCE(SUM(total_price) FILTER (WHERE status = 'pending'), 0)             AS pending_impact,
+        COUNT(*)          FILTER (WHERE status IN ('confirmed','delivered','dispatched')
+                                    AND order_at >= ${today})                        AS done_today
+      FROM orders
+    `,
+  ]);
+
+  const p = prodRows[0];
+  const o = orderRows[0];
+
+  const lowStock    = Number(p?.low ?? 0);
+  const critical    = Number(p?.critical ?? 0);
+  const pending     = Number(o?.pending_count ?? 0);
+  const impact      = Number(o?.pending_impact ?? 0);
+  const doneToday   = Number(o?.done_today ?? 0);
+
+  return {
+    open:      lowStock + pending,   // low-stock products + unconfirmed orders
+    completed: doneToday,            // confirmed/delivered today
+    urgent:    critical,             // stock < 3 (stockout imminent)
+    impact,                          // total value of pending orders
+  };
+}
+
+// ─── Demand products ──────────────────────────────────────────────────────────
+
+export interface DemandProduct {
+  id: number;
+  product_name: string;
+  sender_id: string;
+  request_count: number;
+  created_at: Date;
+}
+
+export async function addDemandProduct(
+  senderPsid: string,
+  productName: string
+): Promise<void> {
+  if (!sql) return;
+  const normalized = productName.trim().toLowerCase();
+  await sql`
+    INSERT INTO demand_products (product_name, sender_id, request_count)
+    VALUES (${normalized}, ${senderPsid}, 1)
+    ON CONFLICT (product_name, sender_id)
+    DO UPDATE SET request_count = demand_products.request_count + 1
+  `;
+}
+
+export async function listDemandProducts(): Promise<{ product_name: string; total_requests: number; unique_users: number; last_requested: Date }[]> {
+  if (!sql) return [];
+  return sql`
+    SELECT
+      product_name,
+      SUM(request_count)::int  AS total_requests,
+      COUNT(DISTINCT sender_id)::int AS unique_users,
+      MAX(created_at)          AS last_requested
+    FROM demand_products
+    GROUP BY product_name
+    ORDER BY total_requests DESC
+  `;
 }
 
 // ─── Log queries ──────────────────────────────────────────────────────────────

@@ -39,6 +39,13 @@ CREATE TABLE IF NOT EXISTS orders (
   address       JSONB
 );
 
+-- Human-facing order reference, stored (not computed in the UI) so it's a
+-- real lookup key: TRX-001, TRX-002, ... — zero-padded to 3 digits, derived
+-- from id so it's always unique and never needs backfilling by hand.
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS order_code TEXT
+  GENERATED ALWAYS AS ('TRX-' || LPAD(id::text, 3, '0')) STORED;
+CREATE UNIQUE INDEX IF NOT EXISTS orders_order_code_idx ON orders(order_code);
+
 ALTER TABLE orders ADD COLUMN IF NOT EXISTS customer_name TEXT;
 ALTER TABLE orders ADD COLUMN IF NOT EXISTS phone TEXT;
 ALTER TABLE orders ADD COLUMN IF NOT EXISTS channel TEXT DEFAULT 'messenger';
@@ -96,6 +103,15 @@ ALTER TABLE settings ADD COLUMN IF NOT EXISTS openai_api_key TEXT;
 
 ALTER TABLE conversations ADD COLUMN IF NOT EXISTS image_url TEXT;
 
+CREATE TABLE IF NOT EXISTS demand_products (
+  id            SERIAL PRIMARY KEY,
+  product_name  TEXT        NOT NULL,
+  sender_id     TEXT        NOT NULL,
+  request_count INTEGER     NOT NULL DEFAULT 1,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (product_name, sender_id)
+);
+
 CREATE TABLE IF NOT EXISTS assistant_sessions (
   id          SERIAL PRIMARY KEY,
   title       TEXT,
@@ -112,6 +128,16 @@ CREATE TABLE IF NOT EXISTS assistant_messages (
 );
 
 CREATE INDEX IF NOT EXISTS assistant_messages_session_idx ON assistant_messages(session_id, created_at);
+
+-- The assistant session used when the owner texts the Telegram bot, so the
+-- Telegram thread and the dashboard's web Assistant chat are the same
+-- conversation (created lazily on first incoming Telegram message).
+ALTER TABLE settings ADD COLUMN IF NOT EXISTS telegram_session_id INTEGER REFERENCES assistant_sessions(id);
+
+-- Telegram's per-webhook secret_token, echoed back on every update as the
+-- X-Telegram-Bot-Api-Secret-Token header — lets the webhook route reject
+-- forged requests instead of trusting the chat_id alone.
+ALTER TABLE settings ADD COLUMN IF NOT EXISTS telegram_webhook_secret TEXT;
 
 -- Read-only role for the assistant's execute_query tool. SELECT-only on
 -- products/orders — no access to settings (holds plaintext API keys) or

@@ -10,6 +10,7 @@ import {
   getSettings,
   getFbContact,
   upsertFbContact,
+  addDemandProduct,
   type Product,
   type SettingsRow,
 } from "../db";
@@ -33,6 +34,7 @@ const AgentState = Annotation.Root({
     contact: string;
     address: string;
   } | null>({ value: (_, y) => y, default: () => null }),
+  demandProduct: Annotation<string | null>({ value: (_, y) => y, default: () => null }),
 });
 
 const replySchema = z.object({
@@ -54,6 +56,12 @@ const replySchema = z.object({
     .nullable()
     .describe(
       "Set this ONLY on the turn where the customer has just explicitly confirmed placing the order (said yes/confirm after you read back name, contact, address, product, and quantity). This is what actually creates the order in the system. Otherwise leave null, including on every earlier turn while still collecting or confirming details."
+    ),
+  demand_product: z
+    .string()
+    .nullable()
+    .describe(
+      "If the customer asked for a product that does NOT exist in the catalog, extract the product name here (normalized, lowercase). Otherwise null."
     ),
 });
 
@@ -120,6 +128,7 @@ async function generateReply(state: typeof AgentState.State) {
     reply: response.reply,
     imageProductId: response.image_product_id,
     orderToCreate: response.create_order,
+    demandProduct: response.demand_product ?? null,
   };
 }
 
@@ -161,6 +170,10 @@ async function sendReply(state: typeof AgentState.State) {
     ]);
     logIfFailed("sendImage")(imgSendResult);
     logIfFailed("saveMessage(image)")(imgSaveResult);
+  }
+
+  if (state.demandProduct) {
+    addDemandProduct(state.senderPsid, state.demandProduct).catch(() => {});
   }
 
   if (state.orderToCreate) {
