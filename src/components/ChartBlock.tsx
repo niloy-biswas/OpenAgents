@@ -41,15 +41,15 @@ function formatYAxis(value: number) {
   return String(value);
 }
 
-const AXIS_COLOR = "#9195a3";
-const GRID_COLOR = "#262a33";
+const AXIS_COLOR = "var(--oa-text-faint)";
+const GRID_COLOR = "var(--oa-line-soft)";
 
 const tooltipStyle = {
-  background: "#1d2027",
-  border: "1px solid #333844",
+  background: "var(--oa-surface)",
+  border: "1px solid var(--oa-line)",
   borderRadius: 8,
   fontSize: 12,
-  color: "#ece8de",
+  color: "var(--oa-text)",
 };
 
 export function ChartBlock({ spec }: { spec: ChartSpec }) {

@@ -109,7 +109,7 @@ export default function OrdersClient({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search orders, customers, items"
-              className="bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-xs outline-none focus:border-oa-gold w-48"
+              className="bg-oa-bg border border-oa-line-soft rounded-oa-sm px-3 py-2 text-xs outline-none focus:border-oa-primary w-48"
             />
           </div>
         </div>

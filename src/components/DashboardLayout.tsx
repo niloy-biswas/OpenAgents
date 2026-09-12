@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useId, useState } from "react";
 import { cn } from "../lib/utils";
+import { ThemeToggle } from "./ThemeToggle";
 
 const nav = [
   { href: "/dashboard", label: "Overview", icon: OverviewIcon },
@@ -54,7 +55,7 @@ export default function DashboardLayout({
     Orders: "Manage and confirm orders",
     Inventory: "Products, stock levels, variants",
     Assistant: "Ask anything about your business",
-    Settings: "Connect channels and import catalog",
+    Settings: "Connect channels, profile and Telegram",
   }[pageTitle];
 
   return (
@@ -62,18 +63,19 @@ export default function DashboardLayout({
       {/* Sidebar */}
       <aside
         className={cn(
-          "flex flex-col shrink-0 bg-[#101217] border-r border-oa-line-soft transition-all duration-300",
+          "flex flex-col shrink-0 bg-oa-sidebar border-r border-oa-line-soft transition-all duration-300",
           collapsed ? "w-16 px-2" : "w-[236px] px-3.5"
         )}
       >
         {/* Brand */}
-        <div
+        <Link
+          href="/"
           className={cn(
             "flex items-center py-5",
             collapsed ? "justify-center px-0" : "gap-2.5 px-2"
           )}
         >
-          <div className="h-[30px] w-[30px] rounded-[9px] bg-gradient-to-br from-oa-gold to-[#c97d1e] flex items-center justify-center font-mono font-semibold text-[15px] text-oa-bg shrink-0">
+          <div className="h-[30px] w-[30px] rounded-[9px] bg-gradient-to-br from-oa-primary to-[#1d4ed8] flex items-center justify-center font-mono font-semibold text-[15px] text-white shrink-0">
             ৳
           </div>
           {!collapsed && (
@@ -82,7 +84,7 @@ export default function DashboardLayout({
               <div className="text-[10.5px] text-oa-text-faint">Dashboard</div>
             </div>
           )}
-        </div>
+        </Link>
 
         {/* Navigation */}
         <nav className="flex flex-col gap-0.5">
@@ -118,7 +120,7 @@ export default function DashboardLayout({
                 {active && (
                   <span
                     className={cn(
-                      "absolute top-2 bottom-2 w-[3px] rounded-full bg-oa-gold",
+                      "absolute top-2 bottom-2 w-[3px] rounded-full bg-oa-primary",
                       collapsed ? "left-0" : "-left-3.5"
                     )}
                   />
@@ -192,6 +194,7 @@ export default function DashboardLayout({
                 className="bg-transparent outline-none text-sm w-full placeholder:text-oa-text-faint"
               />
             </div>
+            <ThemeToggle />
             <div className="relative">
               <button
                 onClick={() => setProfileOpen((v) => !v)}

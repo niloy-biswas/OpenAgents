@@ -59,14 +59,14 @@ const MARKDOWN_COMPONENTS = {
         </pre>
       );
     }
-    return <code className="bg-oa-bg border border-oa-line-soft rounded px-1.5 py-0.5 text-xs font-mono text-oa-gold">{children}</code>;
+    return <code className="bg-oa-bg border border-oa-line-soft rounded px-1.5 py-0.5 text-xs font-mono text-oa-primary">{children}</code>;
   },
   pre: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
   h1: ({ children }: { children?: React.ReactNode }) => <h1 className="text-base font-bold mt-3 mb-1.5 text-oa-text">{children}</h1>,
   h2: ({ children }: { children?: React.ReactNode }) => <h2 className="text-sm font-bold mt-3 mb-1.5 text-oa-text">{children}</h2>,
   h3: ({ children }: { children?: React.ReactNode }) => <h3 className="text-sm font-semibold mt-2 mb-1 text-oa-text">{children}</h3>,
   blockquote: ({ children }: { children?: React.ReactNode }) => (
-    <blockquote className="border-l-2 border-oa-gold/50 pl-3 text-oa-text-faint italic my-2">{children}</blockquote>
+    <blockquote className="border-l-2 border-oa-primary/50 pl-3 text-oa-text-faint italic my-2">{children}</blockquote>
   ),
   hr: () => <hr className="border-oa-line-soft my-3" />,
 };

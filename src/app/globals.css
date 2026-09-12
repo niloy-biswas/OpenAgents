@@ -14,6 +14,10 @@
   --oa-text: #ece8de;
   --oa-text-dim: #9195a3;
   --oa-text-faint: #666b78;
+  --oa-sidebar: #101217;
+  --oa-primary: #3b82f6;
+  --oa-primary-dim: #1e3a8a;
+  --oa-primary-soft: #172554;
   --oa-gold: #e8a33d;
   --oa-gold-dim: #6b551f;
   --oa-gold-soft: #3d3320;
@@ -23,9 +27,38 @@
   --oa-red-dim: #402029;
   --oa-blue: #5b8def;
   --oa-blue-dim: #202b42;
+  --oa-white: #ffffff;
+  --oa-black: #0f1115;
   --oa-radius-lg: 18px;
   --oa-radius-md: 12px;
   --oa-radius-sm: 8px;
+}
+
+html.light {
+  --oa-bg: #f8fafc;
+  --oa-surface: #ffffff;
+  --oa-surface-hi: #f1f5f9;
+  --oa-surface-raise: #e2e8f0;
+  --oa-line: #e2e8f0;
+  --oa-line-soft: #f1f5f9;
+  --oa-text: #0f172a;
+  --oa-text-dim: #475569;
+  --oa-text-faint: #94a3b8;
+  --oa-sidebar: #f1f5f9;
+  --oa-primary: #2563eb;
+  --oa-primary-dim: #dbeafe;
+  --oa-primary-soft: #eff6ff;
+  --oa-gold: #d97706;
+  --oa-gold-dim: #fef3c7;
+  --oa-gold-soft: #fffbeb;
+  --oa-green: #059669;
+  --oa-green-dim: #d1fae5;
+  --oa-red: #dc2626;
+  --oa-red-dim: #fee2e2;
+  --oa-blue: #3b82f6;
+  --oa-blue-dim: #dbeafe;
+  --oa-white: #ffffff;
+  --oa-black: #0f172a;
 }
 
 @layer base {
@@ -35,7 +68,7 @@
     -webkit-font-smoothing: antialiased;
   }
   ::selection {
-    @apply bg-oa-gold text-oa-bg;
+    @apply bg-oa-primary text-white;
   }
 }
 
@@ -53,6 +86,14 @@
 
 .animate-pulse-dot {
   animation: pulse-dot 2s infinite;
+}
+
+/* Hide default <details> marker so our custom chevron is the only indicator */
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
 }
 
 /* Custom scrollbar for dark theme */
