@@ -68,7 +68,7 @@ export default function ChatClient({ senders }: { senders: ConversationSummary[]
       <div className="w-full md:w-80 border-r border-oa-line-soft flex flex-col shrink-0">
         <div className="p-4 border-b border-oa-line-soft flex items-center justify-between">
           <span className="text-sm font-semibold">Conversations</span>
-          <span className="text-[11px] font-mono text-oa-gold">{senders.length} users</span>
+          <span className="text-[11px] font-mono text-oa-primary">{senders.length} users</span>
         </div>
         <div className="flex-1 overflow-y-auto">
           {senders.length === 0 && (
@@ -90,7 +90,7 @@ export default function ChatClient({ senders }: { senders: ConversationSummary[]
                   <img src={s.profile_pic} alt="" className="h-10 w-10 rounded-[10px] object-cover border border-oa-line-soft shrink-0" />
                 ) : (
                   <div className="h-10 w-10 rounded-[10px] bg-oa-surface-raise border border-oa-line-soft flex items-center justify-center shrink-0">
-                    <span className="text-xs font-mono text-oa-gold font-semibold">
+                    <span className="text-xs font-mono text-oa-primary font-semibold">
                       {(s.first_name ?? s.sender_id).slice(0, 2).toUpperCase()}
                     </span>
                   </div>
@@ -132,7 +132,7 @@ export default function ChatClient({ senders }: { senders: ConversationSummary[]
                 </div>
                 <div className="text-[11px] text-oa-text-faint font-mono">{selected.sender_id}</div>
               </div>
-              <span className="text-[11px] font-mono text-oa-gold">{selected.message_count} messages</span>
+              <span className="text-[11px] font-mono text-oa-primary">{selected.message_count} messages</span>
             </div>
 
             <div className="flex-1 overflow-y-auto p-5 space-y-4" ref={scrollRef}>
@@ -145,14 +145,14 @@ export default function ChatClient({ senders }: { senders: ConversationSummary[]
                     className={cn(
                       "max-w-[75%] rounded-oa-lg px-4 py-3 text-sm whitespace-pre-wrap",
                       m.role === "assistant"
-                        ? "bg-oa-gold text-oa-bg rounded-br-none"
+                        ? "bg-oa-primary text-white rounded-br-none"
                         : "bg-oa-surface-raise border border-oa-line rounded-bl-none"
                     )}
                   >
                     {m.content}
                     <div className={cn(
                       "text-[10px] mt-1.5 font-mono",
-                      m.role === "assistant" ? "text-oa-bg/70" : "text-oa-text-faint"
+                      m.role === "assistant" ? "text-white/70" : "text-oa-text-faint"
                     )}>
                       {new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                     </div>

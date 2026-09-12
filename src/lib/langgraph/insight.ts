@@ -11,6 +11,7 @@ import {
   searchProducts,
   getOrderStats,
   searchOrders,
+  getOrderByCode,
   getProduct,
   updateProduct,
   type OrderStatus,
@@ -98,6 +99,38 @@ const tools = [
         "Get order counts by status and total revenue, optionally scoped to the last N days. Use for sales/revenue/trend questions.",
       schema: z.object({
         days: z.number().nullable().optional().describe("Limit to the last N days, omit for all-time"),
+      }),
+    }
+  ),
+  tool(
+    async ({ order_ref }: { order_ref: string }) => {
+      const order = await getOrderByCode(order_ref);
+      if (!order) {
+        return JSON.stringify({ error: `No order matching "${order_ref}"` });
+      }
+      const product = await getProduct(order.product_id);
+      return JSON.stringify({
+        id: order.id,
+        order_code: order.order_code,
+        product: product?.title ?? null,
+        quantity: order.quantity,
+        total_price: order.total_price,
+        status: order.status,
+        customer_name: order.customer_name,
+        phone: order.phone,
+        channel: order.channel,
+        sender_id: order.sender_id,
+        order_at: order.order_at,
+        delivery_at: order.delivery_at,
+        address: order.address,
+      });
+    },
+    {
+      name: "get_order",
+      description:
+        "Look up a single order by its order code (e.g. 'TRX-012', '#TRX-12', or just '12') or numeric id. Use this whenever the seller references a specific order by number/code, instead of search_orders.",
+      schema: z.object({
+        order_ref: z.string().describe("The order code or id as given, e.g. 'TRX-012' or '12'"),
       }),
     }
   ),
@@ -207,6 +240,8 @@ async function loadBusinessContext(state: typeof InsightState.State) {
 Answer questions about sales, inventory, trends, and restocking. Call the tools available to you to look up live product and order data instead of guessing — combine multiple calls if a question needs it (e.g. revenue trend + low stock). Give actionable, data-driven answers, and flag low-stock items proactively when relevant.
 
 You can also update stock on the seller's behalf with update_product_stock — only when the seller explicitly asks for a stock change (a restock, a correction, "set X to N units"). Look the product up first (search_products / list_low_stock_products) to confirm you have the right id and current quantity, then call update_product_stock, then confirm back what changed. Never change stock unless the seller asked for it in this conversation.
+
+Orders have a code like "TRX-012" shown in the dashboard. When the seller asks about a specific order using a code or number like "TRX-012", "#TRX-12", or just "12", call get_order with that exact text — do not try to look it up via sender_id or search_orders.
 
 RESPONSE FORMAT
 - Always respond in Markdown.

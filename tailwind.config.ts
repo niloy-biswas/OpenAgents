@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: "class",
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
@@ -15,6 +16,10 @@ const config: Config = {
           text: "var(--oa-text)",
           "text-dim": "var(--oa-text-dim)",
           "text-faint": "var(--oa-text-faint)",
+          sidebar: "var(--oa-sidebar)",
+          primary: "var(--oa-primary)",
+          "primary-dim": "var(--oa-primary-dim)",
+          "primary-soft": "var(--oa-primary-soft)",
           gold: "var(--oa-gold)",
           "gold-dim": "var(--oa-gold-dim)",
           "gold-soft": "var(--oa-gold-soft)",

@@ -48,16 +48,18 @@ export async function POST(request: NextRequest) {
     try {
       const product = await createProduct({
         title,
+        author: row.author || undefined,
         price: Number(row.price) || 0,
         quantity: Number(row.quantity ?? row.stock) || 0,
         description: row.sku || row.description || null,
         category: row.category || null,
+        max_discount: Number(row.max_discount ?? row.discount) || 0,
         image_url: row.image_url || row.image || null,
         swatch_color: row.swatch_color || row.color || null,
         swatch_code: row.swatch_code || row.code || null,
         variants,
       });
-      imported.push({ id: product.id, title: product.title });
+      imported.push(product);
     } catch (err: any) {
       errors.push({ row: i + 2, error: err.message || "Insert failed" });
     }

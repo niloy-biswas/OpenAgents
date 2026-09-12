@@ -17,7 +17,8 @@ products
   category TEXT, image_url TEXT, max_discount NUMERIC, created_at TIMESTAMPTZ
 
 orders
-  id INT, product_id INT (FK -> products.id), quantity INT, total_price NUMERIC,
+  id INT, order_code TEXT (display code, e.g. "TRX-012" — use get_order for lookups by this instead of raw SQL),
+  product_id INT (FK -> products.id), quantity INT, total_price NUMERIC,
   order_at TIMESTAMPTZ, delivery_at TIMESTAMPTZ,
   status TEXT (one of: pending, called, confirmed, dispatched, delivered, returned, cancelled),
   sender_id TEXT, customer_name TEXT, phone TEXT, channel TEXT
