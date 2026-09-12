@@ -45,6 +45,7 @@ export type OrderStatus =
 
 export interface Order {
   id: number;
+  order_code: string;
   product_id: number;
   quantity: number;
   total_price: number;
@@ -91,6 +92,7 @@ const mockAssistantSessions: AssistantSession[] = [];
 const mockAssistantMessages: AssistantMessage[] = [];
 let nextProductId = 1;
 let nextOrderId = 1;
+const mockOrderCode = (id: number) => `TRX-${String(id).padStart(3, "0")}`;
 let nextConvId = 1;
 let nextAssistantSessionId = 1;
 let nextAssistantMessageId = 1;
@@ -174,7 +176,8 @@ function seedMock() {
 
   mockOrders.push(
     {
-      id: nextOrderId++,
+      id: nextOrderId,
+      order_code: mockOrderCode(nextOrderId++),
       product_id: 1,
       quantity: 1,
       total_price: 1650,
@@ -189,7 +192,8 @@ function seedMock() {
       address: null,
     },
     {
-      id: nextOrderId++,
+      id: nextOrderId,
+      order_code: mockOrderCode(nextOrderId++),
       product_id: 2,
       quantity: 2,
       total_price: 2200,
@@ -204,7 +208,8 @@ function seedMock() {
       address: null,
     },
     {
-      id: nextOrderId++,
+      id: nextOrderId,
+      order_code: mockOrderCode(nextOrderId++),
       product_id: 1,
       quantity: 1,
       total_price: 1650,
@@ -219,7 +224,8 @@ function seedMock() {
       address: null,
     },
     {
-      id: nextOrderId++,
+      id: nextOrderId,
+      order_code: mockOrderCode(nextOrderId++),
       product_id: 3,
       quantity: 1,
       total_price: 3200,
@@ -442,6 +448,27 @@ export async function getOrder(id: number): Promise<Order | null> {
   return rows[0] ?? null;
 }
 
+// Accepts whatever shape a human might type for the order_code column —
+// "TRX-012", "trx-12", "#TRX-12", or just "12" — normalized to the
+// zero-padded form the column actually stores (see schema.sql's generated
+// column: 'TRX-' || LPAD(id::text, 3, '0')).
+export function normalizeOrderCode(ref: string): string | null {
+  const digits = ref.match(/\d+/)?.[0];
+  if (!digits) return null;
+  return `TRX-${digits.padStart(3, "0")}`;
+}
+
+export async function getOrderByCode(ref: string): Promise<Order | null> {
+  const code = normalizeOrderCode(ref);
+  if (!code) return null;
+  if (!sql) {
+    seedMock();
+    return mockOrders.find((o) => o.order_code === code) ?? null;
+  }
+  const rows = await sql<Order[]>`SELECT * FROM orders WHERE order_code = ${code}`;
+  return rows[0] ?? null;
+}
+
 export async function createOrder(data: {
   product_id: number;
   quantity: number;
@@ -456,7 +483,8 @@ export async function createOrder(data: {
   if (!product) throw new Error(`Product ${data.product_id} not found`);
   const total = product.price * data.quantity;
   const order: Order = {
-    id: nextOrderId++,
+    id: nextOrderId,
+    order_code: mockOrderCode(nextOrderId++),
     product_id: data.product_id,
     quantity: data.quantity,
     total_price: total,

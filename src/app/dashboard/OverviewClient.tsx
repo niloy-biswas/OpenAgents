@@ -21,10 +21,6 @@ function formatDate(d: Date) {
   return date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 }
 
-function orderCode(id: number) {
-  return `#DK-${2200 + id}`;
-}
-
 export default function OverviewClient({
   orders,
   products,

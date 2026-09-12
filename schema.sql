@@ -39,6 +39,13 @@ CREATE TABLE IF NOT EXISTS orders (
   address       JSONB
 );
 
+-- Human-facing order reference, stored (not computed in the UI) so it's a
+-- real lookup key: TRX-001, TRX-002, ... — zero-padded to 3 digits, derived
+-- from id so it's always unique and never needs backfilling by hand.
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS order_code TEXT
+  GENERATED ALWAYS AS ('TRX-' || LPAD(id::text, 3, '0')) STORED;
+CREATE UNIQUE INDEX IF NOT EXISTS orders_order_code_idx ON orders(order_code);
+
 ALTER TABLE orders ADD COLUMN IF NOT EXISTS customer_name TEXT;
 ALTER TABLE orders ADD COLUMN IF NOT EXISTS phone TEXT;
 ALTER TABLE orders ADD COLUMN IF NOT EXISTS channel TEXT DEFAULT 'messenger';

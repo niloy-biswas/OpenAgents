@@ -8,10 +8,6 @@ import { cn } from "@/lib/utils";
 type OrderRow = Order & { product_title: string; product?: Product };
 type FilterState = "all" | Order["status"];
 
-function orderCode(id: number) {
-  return `#DK-${2200 + id}`;
-}
-
 function formatDate(d: string | Date) {
   return new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 }
@@ -172,7 +168,7 @@ export default function OrdersClient({
                         {o.product?.swatch_code?.substring(0, 2).toUpperCase() || "DK"}
                       </div>
                       <div>
-                        <div className="font-medium">{orderCode(o.id)}</div>
+                        <div className="font-medium">#{o.order_code}</div>
                         <div className="text-[10.5px] text-oa-text-faint">{o.product_title}</div>
                       </div>
                     </div>
