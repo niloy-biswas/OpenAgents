@@ -52,14 +52,23 @@ export default function ChatClient({ senders }: { senders: ConversationSummary[]
                   isActive ? "bg-oa-surface-hi" : "hover:bg-oa-surface-hi"
                 )}
               >
-                <div className="h-10 w-10 rounded-[10px] bg-oa-surface-raise border border-oa-line-soft flex items-center justify-center shrink-0">
-                  <span className="text-xs font-mono text-oa-gold font-semibold">
-                    {s.sender_id.slice(0, 2).toUpperCase()}
-                  </span>
-                </div>
+                {s.profile_pic ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={s.profile_pic} alt="" className="h-10 w-10 rounded-[10px] object-cover border border-oa-line-soft shrink-0" />
+                ) : (
+                  <div className="h-10 w-10 rounded-[10px] bg-oa-surface-raise border border-oa-line-soft flex items-center justify-center shrink-0">
+                    <span className="text-xs font-mono text-oa-gold font-semibold">
+                      {(s.first_name ?? s.sender_id).slice(0, 2).toUpperCase()}
+                    </span>
+                  </div>
+                )}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium truncate font-mono">{s.sender_id.slice(0, 14)}</span>
+                    <span className="text-sm font-medium truncate">
+                      {s.first_name || s.last_name
+                        ? `${s.first_name ?? ""} ${s.last_name ?? ""}`.trim()
+                        : s.sender_id.slice(0, 14)}
+                    </span>
                     <span className="text-[10px] text-oa-text-faint font-mono shrink-0 ml-1">
                       {new Date(s.last_at).toLocaleDateString()}
                     </span>
@@ -83,7 +92,11 @@ export default function ChatClient({ senders }: { senders: ConversationSummary[]
           <>
             <div className="p-4 border-b border-oa-line-soft flex items-center justify-between">
               <div>
-                <div className="text-sm font-medium">Customer</div>
+                <div className="text-sm font-medium">
+                  {selected.first_name || selected.last_name
+                    ? `${selected.first_name ?? ""} ${selected.last_name ?? ""}`.trim()
+                    : "Customer"}
+                </div>
                 <div className="text-[11px] text-oa-text-faint font-mono">{selected.sender_id}</div>
               </div>
               <span className="text-[11px] font-mono text-oa-gold">{selected.message_count} messages</span>
