@@ -10,9 +10,30 @@ export default function ChatClient({ senders }: { senders: ConversationSummary[]
   );
   const [thread, setThread] = useState<ConversationMessage[]>([]);
   const [loading, setLoading] = useState(false);
+  const [input, setInput] = useState("");
+  const [sending, setSending] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const selected = senders.find((s) => s.sender_id === selectedId) ?? senders[0] ?? null;
+
+  async function sendReply() {
+    if (!input.trim() || !selected || sending) return;
+    setSending(true);
+    const text = input.trim();
+    setInput("");
+    await fetch("/api/conversations/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sender_id: selected.sender_id, text }),
+    });
+    // optimistically append to thread
+    setThread((prev) => [
+      ...prev,
+      { id: Date.now(), role: "assistant", content: text, image_url: null, created_at: new Date() } as any,
+    ]);
+    setSending(false);
+    setTimeout(() => scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" }), 50);
+  }
 
   useEffect(() => {
     if (!selectedId) return;
@@ -129,6 +150,32 @@ export default function ChatClient({ senders }: { senders: ConversationSummary[]
               {!loading && thread.length === 0 && (
                 <p className="text-center text-sm text-oa-text-faint">No messages yet.</p>
               )}
+            </div>
+
+            {/* Composer */}
+            <div className="p-4 border-t border-oa-line-soft bg-oa-bg/50">
+              <div className="flex items-end gap-3">
+                <textarea
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      sendReply();
+                    }
+                  }}
+                  placeholder="Type a reply to send via Messenger…"
+                  rows={2}
+                  className="flex-1 bg-oa-surface border border-oa-line-soft rounded-oa-md px-4 py-3 text-sm outline-none focus:border-oa-gold resize-none"
+                />
+                <button
+                  onClick={sendReply}
+                  disabled={sending || !input.trim()}
+                  className="bg-oa-gold text-oa-bg rounded-oa-md px-4 h-[72px] text-sm font-semibold hover:brightness-110 transition-all disabled:opacity-50"
+                >
+                  {sending ? "Sending…" : "Send"}
+                </button>
+              </div>
             </div>
           </>
         )}

@@ -3,7 +3,7 @@ import postgres from "postgres";
 // ─── DB client (falls back to in-memory mock when DATABASE_URL is missing) ─────
 
 const databaseUrl = process.env.DATABASE_URL;
-const sql: ReturnType<typeof postgres> | null = databaseUrl ? postgres(databaseUrl) : null;
+const sql: ReturnType<typeof postgres> | null = databaseUrl ? postgres(databaseUrl, { prepare: false }) : null;
 
 if (!sql) {
   console.warn("[db] DATABASE_URL not set — using in-memory mock store for local preview");
