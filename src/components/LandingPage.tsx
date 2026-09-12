@@ -11,6 +11,33 @@ const features = [
   [AssistantIcon, "A business assistant", "Ask questions about orders, sales, customers, and inventory in plain language."],
 ] as const;
 
+const faqs = [
+  [
+    "Will this work with my existing Facebook Page?",
+    "Yes. You connect the Facebook Page you already manage. No new page, website, or shop setup is required — it replies right inside your Messenger conversations.",
+  ],
+  [
+    "What languages can it reply in?",
+    "It handles Bangla, English, and Banglish out of the box, which matches how most customers in Bangladesh actually message sellers.",
+  ],
+  [
+    "How does stock stay accurate?",
+    "OpenAgents reads the same Google Sheet you already use for inventory. When a customer asks, the answer is based on the live quantity in your sheet, not a guess.",
+  ],
+  [
+    "Can I approve replies before they are sent?",
+    "Absolutely. It is built as a co-pilot, not an autopilot. Proactive suggestions and restock alerts are drafted for you to review and approve — nothing posts without your say.",
+  ],
+  [
+    "Does it collect orders or just answer questions?",
+    "Both. It answers product questions, checks stock, and collects the product, quantity, name, phone, and address needed to confirm an order.",
+  ],
+  [
+    "Is my catalog data secure?",
+    "Your catalog is used only to ground replies in your own conversations. It is not used to train any model and is never shared with other sellers.",
+  ],
+];
+
 export default function LandingPage({ isLoggedIn }: LandingPageProps) {
   const dashboardHref = isLoggedIn ? "/dashboard" : "/login";
 
@@ -28,6 +55,7 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
           <a href="#product" className="transition-colors hover:text-oa-text">Product</a>
           <a href="#how-it-works" className="transition-colors hover:text-oa-text">How it works</a>
           <a href="#control" className="transition-colors hover:text-oa-text">Why co-pilot</a>
+          <a href="#faq" className="transition-colors hover:text-oa-text">FAQ</a>
         </nav>
         <div className="flex items-center gap-3">
           <ThemeToggle />
@@ -114,6 +142,18 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
         </div>
       </section>
 
+      <section id="faq" className="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10 lg:py-32">
+        <div className="max-w-3xl mx-auto">
+          <div className="mb-4 text-[11px] text-oa-primary">FAQ</div>
+          <h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">Questions, answered.</h2>
+          <div className="mt-10 divide-y divide-oa-line-soft rounded-oa-lg border border-oa-line-soft bg-oa-surface overflow-hidden">
+            {faqs.map(([q, a]) => (
+              <FaqItem key={q} question={q} answer={a} />
+            ))}
+          </div>
+        </div>
+      </section>
+
                 <section className="mx-auto max-w-7xl px-5 pb-24 sm:px-8 lg:px-10 lg:pb-32"><div className="relative overflow-hidden rounded-oa-lg border border-oa-line bg-oa-surface px-6 py-12 sm:px-12 sm:py-16"><div className="relative max-w-2xl"><div className="mb-4 text-[11px] text-oa-primary">Ready when your page is</div><h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">Give your shop a clearer second pair of eyes.</h2><p className="mt-5 max-w-xl text-base leading-7 text-oa-text-dim">Connect your catalog, bring your conversations together, and spend more time on the decisions that grow the business.</p><Link href={dashboardHref} className="mt-8 inline-flex items-center gap-2 rounded-oa-sm bg-oa-primary px-4 py-3 text-sm font-semibold text-oa-bg transition-all hover:brightness-110">{isLoggedIn ? "Go to dashboard" : "Open the dashboard"}<ArrowIcon /></Link></div></div></section>
 
       <footer className="border-t border-oa-line-soft"><div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-7 text-[11px] text-oa-text-faint sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10"><div className="flex items-center gap-2"><BrandMark small /><span>OpenAgents · Seller co-pilot</span></div><div>Built for the work behind every social sale.</div></div></footer>
@@ -134,6 +174,36 @@ function OrderPanel() { return <div className="rounded-oa-md border border-oa-li
 function StockPanel() { return <div className="rounded-oa-md border border-oa-line-soft bg-oa-bg p-3 sm:p-4"><div className="mb-3 text-[10px] font-semibold">Low stock</div><div className="space-y-3"><StockLine name="Eid Premium Panjabi" qty="2 units" red /><StockLine name="Classic Linen Shirt" qty="4 units" /><div className="rounded-[6px] border border-oa-blue/20 bg-oa-blue-dim px-2.5 py-2 text-[9px] leading-4 text-oa-blue">Ask Assistant about restocking</div></div></div>; }
 function OrderLine({ name, item, amount, status }: { name: string; item: string; amount: string; status: string }) { const color = status === "Delivered" ? "text-oa-green" : status === "Confirmed" ? "text-oa-blue" : "text-oa-gold"; return <div className="flex items-center justify-between gap-2"><div className="min-w-0"><div className="truncate text-[9px] font-medium sm:text-[10px]">{name}</div><div className="truncate text-[8px] text-oa-text-faint">{item}</div></div><div className="shrink-0 text-right"><div className="font-mono text-[9px]">{amount}</div><div className={`mt-0.5 text-[7px] ${color}`}>{status}</div></div></div>; }
 function StockLine({ name, qty, red = false }: { name: string; qty: string; red?: boolean }) { return <div className="flex items-center justify-between gap-2"><span className="truncate text-[9px] text-oa-text-dim">{name}</span><span className={`shrink-0 font-mono text-[9px] ${red ? "text-oa-red" : "text-oa-gold"}`}>{qty}</span></div>; }
+function FaqItem({ question, answer }: { question: string; answer: string }) {
+  return (
+    <details className="group border-b border-oa-line-soft last:border-0">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 sm:p-6 text-sm font-medium text-oa-text transition-colors hover:text-oa-primary">
+        {question}
+        <ChevronIcon className="h-4 w-4 shrink-0 text-oa-text-faint transition-transform duration-200 group-open:rotate-180" />
+      </summary>
+      <div className="px-5 pb-5 text-sm leading-6 text-oa-text-dim sm:px-6 sm:pb-6">
+        {answer}
+      </div>
+    </details>
+  );
+}
+
+function ChevronIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M6 9l6 6 6-6" />
+    </svg>
+  );
+}
+
 function ArrowIcon() { return <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></svg>; }
 function CheckIcon() { return <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12 4 4L19 6" /></svg>; }
 function MessageIcon() { return <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="5" width="16" height="11" rx="3" /><path d="M8 21l4-4 4 4" /><circle cx="9" cy="10.5" r=".6" fill="currentColor" stroke="none" /><circle cx="15" cy="10.5" r=".6" fill="currentColor" stroke="none" /></svg>; }

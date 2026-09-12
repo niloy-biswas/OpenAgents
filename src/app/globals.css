@@ -88,6 +88,14 @@ html.light {
   animation: pulse-dot 2s infinite;
 }
 
+/* Hide default <details> marker so our custom chevron is the only indicator */
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
 /* Custom scrollbar for dark theme */
 ::-webkit-scrollbar {
   width: 8px;
