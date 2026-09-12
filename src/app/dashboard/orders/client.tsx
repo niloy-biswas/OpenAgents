@@ -99,7 +99,7 @@ export default function OrdersClient({ orders }: { orders: OrderWithTitle[] }) {
     router.refresh();
   }
 
-  const TABS: { key: Status | "all"; label: string }[] = [
+  const ALL_TABS: { key: Status | "all"; label: string }[] = [
     { key: "all", label: "All" },
     { key: "pending", label: "Pending" },
     { key: "called", label: "Called" },
@@ -108,7 +108,8 @@ export default function OrdersClient({ orders }: { orders: OrderWithTitle[] }) {
     { key: "delivered", label: "Delivered" },
     { key: "returned", label: "Returned" },
     { key: "cancelled", label: "Cancelled" },
-  ].filter((t) => t.key === "all" || counts[t.key] > 0);
+  ];
+  const TABS = ALL_TABS.filter((t) => t.key === "all" || counts[t.key] > 0);
 
   return (
     <div className="space-y-4">
