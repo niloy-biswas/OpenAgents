@@ -149,6 +149,13 @@ export default function ChatClient({ senders }: { senders: ConversationSummary[]
                         : "bg-oa-surface-raise border border-oa-line rounded-bl-none"
                     )}
                   >
+                    {m.image_url && (
+                      <img
+                        src={m.image_url}
+                        alt=""
+                        className="mb-2 max-h-64 rounded-oa-md object-cover"
+                      />
+                    )}
                     {m.content}
                     <div className={cn(
                       "text-[10px] mt-1.5 font-mono",
