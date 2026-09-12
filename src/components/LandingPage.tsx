@@ -59,9 +59,9 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
         </nav>
         <div className="flex items-center gap-3">
           <ThemeToggle />
-          {!isLoggedIn && <Link href="/login" className="hidden text-[13px] text-oa-text-dim transition-colors hover:text-oa-text sm:inline-flex">Sign in</Link>}
+          {!isLoggedIn && <Link href="/login" className="hidden text-[13px] text-oa-text-dim transition-colors hover:text-oa-text sm:inline-flex">Login</Link>}
           <Link href={dashboardHref} className="rounded-oa-sm bg-oa-primary px-3.5 py-2 text-[12px] font-semibold text-oa-bg transition-all hover:brightness-110">
-            {isLoggedIn ? "Go to dashboard" : "See the product"}
+            {isLoggedIn ? "Go to dashboard" : "Let's Start"}
           </Link>
         </div>
       </header>
@@ -84,7 +84,7 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link href={dashboardHref} className="inline-flex items-center gap-2 rounded-oa-sm bg-oa-primary px-4 py-3 text-sm font-semibold text-oa-bg transition-all hover:brightness-110">
-                {isLoggedIn ? "Go to dashboard" : "Open the dashboard"}<ArrowIcon />
+                {isLoggedIn ? "Go to dashboard" : "Let's Start"}<ArrowIcon />
               </Link>
               <a href="#how-it-works" className="inline-flex items-center rounded-oa-sm border border-oa-line bg-oa-surface-raise px-4 py-3 text-sm text-oa-text-dim transition-colors hover:border-oa-primary hover:text-oa-text">How it works</a>
             </div>
@@ -154,7 +154,7 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
         </div>
       </section>
 
-                <section className="mx-auto max-w-7xl px-5 pb-24 sm:px-8 lg:px-10 lg:pb-32"><div className="relative overflow-hidden rounded-oa-lg border border-oa-line bg-oa-surface px-6 py-12 sm:px-12 sm:py-16"><div className="relative max-w-2xl"><div className="mb-4 text-[11px] text-oa-primary">Ready when your page is</div><h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">Give your shop a clearer second pair of eyes.</h2><p className="mt-5 max-w-xl text-base leading-7 text-oa-text-dim">Connect your catalog, bring your conversations together, and spend more time on the decisions that grow the business.</p><Link href={dashboardHref} className="mt-8 inline-flex items-center gap-2 rounded-oa-sm bg-oa-primary px-4 py-3 text-sm font-semibold text-oa-bg transition-all hover:brightness-110">{isLoggedIn ? "Go to dashboard" : "Open the dashboard"}<ArrowIcon /></Link></div></div></section>
+                <section className="mx-auto max-w-7xl px-5 pb-24 sm:px-8 lg:px-10 lg:pb-32"><div className="relative overflow-hidden rounded-oa-lg border border-oa-line bg-oa-surface px-6 py-12 sm:px-12 sm:py-16"><div className="relative max-w-2xl"><div className="mb-4 text-[11px] text-oa-primary">Ready when your page is</div><h2 className="text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">Give your shop a clearer second pair of eyes.</h2><p className="mt-5 max-w-xl text-base leading-7 text-oa-text-dim">Connect your catalog, bring your conversations together, and spend more time on the decisions that grow the business.</p><Link href={dashboardHref} className="mt-8 inline-flex items-center gap-2 rounded-oa-sm bg-oa-primary px-4 py-3 text-sm font-semibold text-oa-bg transition-all hover:brightness-110">{isLoggedIn ? "Go to dashboard" : "Let's Start"}<ArrowIcon /></Link></div></div></section>
 
       <footer className="border-t border-oa-line-soft"><div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-7 text-[11px] text-oa-text-faint sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10"><div className="flex items-center gap-2"><BrandMark small /><span>OpenAgents · Seller co-pilot</span></div><div>Built for the work behind every social sale.</div></div></footer>
     </main>
