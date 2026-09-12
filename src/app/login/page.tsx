@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import Logo from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function LoginPage() {
@@ -46,9 +47,7 @@ export default function LoginPage() {
 
       <div className="relative w-full max-w-[380px] bg-oa-surface border border-oa-line-soft rounded-oa-lg p-7 shadow-2xl">
         <div className="flex flex-col items-center mb-7">
-          <div className="h-11 w-11 rounded-[12px] bg-gradient-to-br from-oa-primary to-[#1d4ed8] flex items-center justify-center font-mono font-semibold text-xl text-white shadow-lg shadow-oa-primary/10">
-            ৳
-          </div>
+          <Logo className="h-11 w-11 shadow-lg shadow-oa-primary/10" />
           <h1 className="mt-4 text-xl font-semibold text-oa-text">OpenAgents Dashboard</h1>
           <p className="text-xs text-oa-text-faint mt-1">Sign in to manage your store</p>
         </div>

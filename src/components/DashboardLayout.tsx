@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useId, useState } from "react";
 import { cn } from "../lib/utils";
+import Logo from "./Logo";
 import { ThemeToggle } from "./ThemeToggle";
 
 const nav = [
@@ -76,9 +77,7 @@ export default function DashboardLayout({
             collapsed ? "justify-center px-0" : "gap-2.5 px-2"
           )}
         >
-          <div className="h-[30px] w-[30px] rounded-[9px] bg-gradient-to-br from-oa-primary to-[#1d4ed8] flex items-center justify-center font-mono font-semibold text-[15px] text-white shrink-0">
-            ৳
-          </div>
+          <Logo className="h-[30px] w-[30px] shrink-0" />
           {!collapsed && (
             <div className="overflow-hidden">
               <div className="font-semibold text-[16.5px] leading-tight">OpenAgents</div>

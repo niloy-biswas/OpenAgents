@@ -313,9 +313,15 @@ export default function InventoryClient({ products: initialProducts }: { product
                               setEditing(p);
                               setModalOpen(true);
                             }}
-                            className="ml-1 text-[11px] bg-oa-surface-raise border border-oa-line rounded-oa-sm px-2.5 py-1 hover:bg-oa-primary-dim hover:border-oa-primary transition-colors"
+                            className="text-[11px] bg-oa-surface-raise border border-oa-line rounded-oa-sm px-2.5 py-1 hover:bg-oa-primary-dim hover:border-oa-primary transition-colors"
                           >
                             Manage
+                          </button>
+                          <button
+                            onClick={() => deleteProduct(p.id)}
+                            className="text-[11px] bg-oa-red-dim border border-oa-red/30 rounded-oa-sm px-2.5 py-1 text-oa-red hover:bg-oa-red hover:text-white transition-colors"
+                          >
+                            Delete
                           </button>
                         </div>
                       </td>
