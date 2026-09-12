@@ -144,14 +144,17 @@ async function sendReply(state: typeof AgentState.State) {
   // Messenger delivery is best-effort and must never block saving the
   // conversation or creating the order — a send failure (expired token,
   // 24h window, invalid psid) shouldn't silently drop a confirmed order.
-  const [sendResult, userSaveResult, assistantSaveResult] = await Promise.allSettled([
+  // Save user first, then assistant — sequential ensures correct id ordering.
+  const [sendResult, userSaveResult] = await Promise.allSettled([
     sendMessage(state.senderPsid, state.reply),
     saveMessage({ sender_id: state.senderPsid, role: "user", content: state.userText }),
-    saveMessage({ sender_id: state.senderPsid, role: "assistant", content: state.reply }),
   ]);
   logIfFailed("sendMessage")(sendResult);
   logIfFailed("saveMessage(user)")(userSaveResult);
-  logIfFailed("saveMessage(assistant)")(assistantSaveResult);
+  const assistantSaveResult = await Promise.allSettled([
+    saveMessage({ sender_id: state.senderPsid, role: "assistant", content: state.reply }),
+  ]);
+  logIfFailed("saveMessage(assistant)")(assistantSaveResult[0]);
 
   const product =
     state.imageProductId != null

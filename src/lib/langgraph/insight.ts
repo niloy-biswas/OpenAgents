@@ -211,6 +211,7 @@ const InsightState = Annotation.Root({
   contextLoaded: Annotation<boolean>({ value: (_, y) => y, default: () => false }),
   systemContext: Annotation<string>({ value: (_, y) => y, default: () => "" }),
   apiKey: Annotation<string>({ value: (_, y) => y, default: () => "" }),
+  channel: Annotation<"web" | "telegram">({ value: (_, y) => y, default: () => "web" }),
 });
 
 // ─── LLM ─────────────────────────────────────────────────────────────────────
@@ -243,7 +244,15 @@ You can also update stock on the seller's behalf with update_product_stock — o
 
 Orders have a code like "TRX-012" shown in the dashboard. When the seller asks about a specific order using a code or number like "TRX-012", "#TRX-12", or just "12", call get_order with that exact text — do not try to look it up via sender_id or search_orders.
 
-RESPONSE FORMAT
+${
+  state.channel === "telegram"
+    ? `RESPONSE FORMAT (Telegram — plain text only)
+- This reply is sent as a raw Telegram message. Telegram does not render Markdown here, so never use *bold*, #headers, tables, or code fences.
+- All monetary values are in BDT (Taka). Show as "৳" with comma separators (e.g. ৳12,500).
+- For multi-row data, use short plain-text lines (one row per line, values separated by " — "), not a table.
+- Lead with a one-line summary, then data, then 2-4 short insights tied to the actual numbers.
+- Never include a chart block — Telegram can't render charts. Instead describe the trend/comparison in 1-2 plain sentences using the actual numbers.`
+    : `RESPONSE FORMAT
 - Always respond in Markdown.
 - All monetary values are in BDT (Taka). Show as "৳" with comma separators (e.g. ৳12,500).
 - Use a Markdown table when returning more than a couple of rows.
@@ -264,7 +273,8 @@ CHART GENERATION
 {"type":"bar","title":"Revenue by status","x_key":"status","y_keys":["revenue"],"data":[{"status":"delivered","revenue":12000},{"status":"pending","revenue":4000}]}
 \`\`\`
 - y_keys is always an array, even for one series. Keep data to at most 20 rows — aggregate first if needed.
-- Never include the chart block without valid JSON — skip the chart entirely if unsure.`;
+- Never include the chart block without valid JSON — skip the chart entirely if unsure.`
+}`;
 
   return { contextLoaded: true, systemContext, apiKey };
 }
@@ -294,14 +304,15 @@ const graph = new StateGraph(InsightState)
 
 export async function runInsightChat(
   history: { role: "user" | "assistant"; content: string }[],
-  userMessage: string
+  userMessage: string,
+  channel: "web" | "telegram" = "web"
 ): Promise<string> {
   const messages: BaseMessage[] = history.map((m) =>
     m.role === "user" ? new HumanMessage(m.content) : new AIMessage(m.content)
   );
   messages.push(new HumanMessage(userMessage));
 
-  const result = await graph.invoke({ messages });
+  const result = await graph.invoke({ messages, channel });
   const last = result.messages[result.messages.length - 1];
   return (last?.content as string) ?? "No response.";
 }

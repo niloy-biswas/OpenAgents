@@ -1168,7 +1168,7 @@ export async function getThreadBySender(
     SELECT id, role, content, image_url, created_at
     FROM conversations
     WHERE sender_id = ${senderPsid}
-    ORDER BY created_at ASC
+    ORDER BY created_at ASC, id ASC
   `;
 }
 

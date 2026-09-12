@@ -101,14 +101,6 @@ export default function InventoryClient({ products: initialProducts }: { product
   const outCount = products.filter((p) => productStatus(p).label === "Out of stock").length;
   const totalValue = products.reduce((s, p) => s + value(p), 0);
 
-  async function deleteProduct(id: number) {
-    if (!confirm("Are you sure you want to delete this product?")) return;
-    const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
-    if (res.ok) {
-      setProducts((prev) => prev.filter((x) => x.id !== id));
-    }
-  }
-
   async function saveProduct(data: {
     id?: number;
     title: string;
@@ -153,6 +145,15 @@ export default function InventoryClient({ products: initialProducts }: { product
         body: JSON.stringify(payload),
       });
     }
+    setModalOpen(false);
+    setEditing(null);
+    router.refresh();
+  }
+
+  async function deleteProduct(id: number) {
+    if (!confirm("Delete this product? This can't be undone.")) return;
+    await fetch(`/api/products/${id}`, { method: "DELETE" });
+    setProducts((prev) => prev.filter((p) => p.id !== id));
     setModalOpen(false);
     setEditing(null);
     router.refresh();
@@ -264,6 +265,9 @@ export default function InventoryClient({ products: initialProducts }: { product
                           <img src={image} alt={p.title} className="h-11 w-11 rounded-[10px] object-cover bg-oa-surface-raise border border-oa-line-soft" />
                           <div>
                             <div className="font-medium">{p.title}</div>
+                            {p.author && (
+                              <div className="text-[10.5px] text-oa-text-faint">by {p.author}</div>
+                            )}
                             <div className="text-[10.5px] text-oa-text-faint font-mono">{p.description || "—"}</div>
                           </div>
                         </div>
@@ -345,6 +349,7 @@ export default function InventoryClient({ products: initialProducts }: { product
             setEditing(null);
           }}
           onSave={saveProduct}
+          onDelete={deleteProduct}
         />
       )}
       {importOpen && (
@@ -371,10 +376,12 @@ function ProductModal({
   product,
   onClose,
   onSave,
+  onDelete,
 }: {
   product: Product | null;
   onClose: () => void;
   onSave: (data: any) => void;
+  onDelete: (id: number) => void;
 }) {
   const [title, setTitle] = useState(product?.title || "");
   const [author, setAuthor] = useState(product?.author || "");
@@ -485,7 +492,18 @@ function ProductModal({
             </button>
           </div>
         </div>
-        <div className="p-5 border-t border-oa-line-soft flex justify-end gap-3">
+        <div className="p-5 border-t border-oa-line-soft flex items-center justify-between gap-3">
+          {product ? (
+            <button
+              onClick={() => onDelete(product.id)}
+              className="px-4 py-2 text-sm text-oa-red border border-oa-red/30 rounded-oa-sm hover:bg-oa-red/10"
+            >
+              Delete product
+            </button>
+          ) : (
+            <span />
+          )}
+          <div className="flex gap-3">
           <button onClick={onClose} className="px-4 py-2 text-sm border border-oa-line rounded-oa-sm hover:bg-oa-surface-hi">Cancel</button>
           <button
             onClick={() =>
@@ -508,6 +526,7 @@ function ProductModal({
           >
             Save product
           </button>
+          </div>
         </div>
       </div>
     </div>
