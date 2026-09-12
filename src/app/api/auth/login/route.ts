@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { checkCredentials, createSession, COOKIE } from "@/lib/auth";
-import { resetDemoStore, seedAdminStoreIfEmpty } from "@/lib/db";
+import { seedAdminStoreIfEmpty } from "@/lib/db";
 
 export async function POST(request: NextRequest) {
   const { username, password } = await request.json();

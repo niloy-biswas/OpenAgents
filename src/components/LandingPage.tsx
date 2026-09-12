@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import Logo from "./Logo";
 import { ThemeToggle } from "./ThemeToggle";
 
 type LandingPageProps = { isLoggedIn: boolean };
@@ -22,11 +23,7 @@ const faqs = [
   ],
   [
     "How does stock stay accurate?",
-    "OpenAgents reads the same Google Sheet you already use for inventory. When a customer asks, the answer is based on the live quantity in your sheet, not a guess.",
-  ],
-  [
-    "Can I approve replies before they are sent?",
-    "Absolutely. It is built as a co-pilot, not an autopilot. Proactive suggestions and restock alerts are drafted for you to review and approve — nothing posts without your say.",
+    "OpenAgents reads the same Google Sheet you already use for inventory. When a customer asks, the answer is based on the live quantity in your dashboard, not a guess.",
   ],
   [
     "Does it collect orders or just answer questions?",
@@ -101,7 +98,7 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
       <section id="product" className="border-y border-oa-line-soft bg-oa-sidebar">
         <div className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-oa-line-soft sm:grid-cols-4">
           <Signal label="Customer conversations" value="24/7" />
-          <Signal label="Languages" value="৩" />
+          <Signal label="Languages" value="3" />
           <Signal label="Order statuses" value="08" />
           <Signal label="Seller control" value="100%" />
         </div>
@@ -161,7 +158,7 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
   );
 }
 
-function BrandMark({ small = false }: { small?: boolean }) { return <div className={`${small ? "h-5 w-5 rounded-[6px] text-[10px]" : "h-[30px] w-[30px] rounded-[9px] text-[15px]"} flex shrink-0 items-center justify-center bg-gradient-to-br from-oa-primary to-[#1d4ed8] font-mono font-semibold text-white`}>৳</div>; }
+function BrandMark({ small = false }: { small?: boolean }) { return <Logo className={small ? "h-5 w-5" : "h-[30px] w-[30px]"} />; }
 function Signal({ label, value }: { label: string; value: string }) { return <div className="px-4 py-5 sm:px-7 sm:py-6"><div className="font-mono text-xl text-oa-text sm:text-2xl">{value}</div><div className="mt-1 text-[10.5px] text-oa-text-faint sm:text-xs">{label}</div></div>; }
 function Step({ number, title, copy }: { number: string; title: string; copy: string }) { return <div className="grid gap-4 p-6 sm:grid-cols-[72px_1fr] sm:gap-6 sm:p-8"><div className="font-mono text-2xl text-oa-primary">{number}</div><div><h3 className="text-lg font-semibold">{title}</h3><p className="mt-2 max-w-lg text-sm leading-6 text-oa-text-dim">{copy}</p></div></div>; }
 function FeatureCard({ icon: Icon, title, copy }: { icon: () => ReactNode; title: string; copy: string }) { return <div className="rounded-oa-lg border border-oa-line-soft bg-oa-surface p-5 transition-colors hover:border-oa-line"><div className="mb-5 flex h-9 w-9 items-center justify-center rounded-oa-sm bg-oa-primary text-white"><Icon /></div><h3 className="text-base font-semibold">{title}</h3><p className="mt-2 text-sm leading-6 text-oa-text-dim">{copy}</p></div>; }

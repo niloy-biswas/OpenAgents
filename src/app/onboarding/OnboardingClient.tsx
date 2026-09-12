@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import Logo from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 type OnboardingState = {
@@ -216,8 +217,8 @@ export default function OnboardingClient() {
         <div className="bg-oa-surface border border-oa-line-soft rounded-oa-lg p-8">
           {step === 0 && (
             <div className="text-center space-y-5">
-              <div className="h-14 w-14 rounded-oa-md bg-gradient-to-br from-oa-primary to-[#1d4ed8] flex items-center justify-center mx-auto text-white font-mono font-bold text-2xl">
-                ৳
+              <div className="mx-auto h-14 w-14">
+                <Logo className="h-full w-full" />
               </div>
               <h1 className="text-2xl font-semibold font-head">Build your AI store</h1>
               <p className="text-sm text-oa-text-dim max-w-md mx-auto">

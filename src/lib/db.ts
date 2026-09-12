@@ -103,73 +103,62 @@ function seedMock() {
   mockProducts.push(
     {
       id: nextProductId++,
-      title: "Eid Premium Panjabi",
-      author: null,
-      price: 1650,
-      quantity: 12,
-      description: "EP-101",
-      category: "Men's Wear",
-      image_url: null,
-      max_discount: 0,
-      swatch_color: "#d4a373",
-      swatch_code: "EP",
-      variants: [
-        { label: "M", stock: 5 },
-        { label: "L", stock: 4 },
-        { label: "XL", stock: 3 },
-      ],
+      title: "Tintin: The Blue Lotus",
+      author: "Hergé",
+      price: 450,
+      quantity: 18,
+      description: "TBL-001",
+      category: "Comics",
+      image_url: "https://covers.openlibrary.org/b/id/755245-L.jpg",
+      max_discount: 30,
+      swatch_color: null,
+      swatch_code: null,
+      variants: [],
       created_at: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
     },
     {
       id: nextProductId++,
-      title: "Classic Linen Shirt",
-      author: null,
-      price: 1100,
-      quantity: 8,
-      description: "CL-205",
-      category: "Men's Wear",
-      image_url: null,
-      max_discount: 0,
-      swatch_color: "#5b8def",
-      swatch_code: "CL",
-      variants: [
-        { label: "M", stock: 3 },
-        { label: "L", stock: 5 },
-      ],
+      title: "Tintin: Destination Moon",
+      author: "Hergé",
+      price: 450,
+      quantity: 18,
+      description: "TDM-002",
+      category: "Comics",
+      image_url: "https://covers.openlibrary.org/b/id/8728178-L.jpg",
+      max_discount: 30,
+      swatch_color: null,
+      swatch_code: null,
+      variants: [],
       created_at: new Date(Date.now() - 1000 * 60 * 60 * 24),
     },
     {
       id: nextProductId++,
-      title: "Silk Sharee — Maroon",
-      author: null,
-      price: 3200,
-      quantity: 4,
-      description: "SS-88",
-      category: "Women's Wear",
-      image_url: null,
-      max_discount: 0,
-      swatch_color: "#d64b60",
-      swatch_code: "SR",
-      variants: [{ label: "Free size", stock: 4 }],
+      title: "Harry Potter and the Philosopher's Stone",
+      author: "J.K. Rowling",
+      price: 650,
+      quantity: 30,
+      description: "HP1-004",
+      category: "Fantasy",
+      image_url: "https://covers.openlibrary.org/b/id/15155833-L.jpg",
+      max_discount: 50,
+      swatch_color: null,
+      swatch_code: null,
+      variants: [],
       created_at: new Date(Date.now() - 1000 * 60 * 60 * 5),
     },
     {
       id: nextProductId++,
-      title: "Cotton Polo T-shirt",
-      author: null,
-      price: 550,
-      quantity: 28,
-      description: "CP-44",
-      category: "Men's Wear",
-      image_url: null,
-      max_discount: 0,
-      swatch_color: "#3fae7a",
-      swatch_code: "CP",
-      variants: [
-        { label: "S", stock: 10 },
-        { label: "M", stock: 10 },
-        { label: "L", stock: 8 },
-      ],
+      title: "The Metamorphosis",
+      author: "Franz Kafka",
+      price: 350,
+      quantity: 35,
+      description: "KM-007",
+      category: "Classic",
+      image_url: "https://covers.openlibrary.org/b/id/12820198-L.jpg",
+      max_discount: 20,
+      swatch_color: null,
+      swatch_code: null,
+      variants: [],
       created_at: new Date(),
     }
   );
@@ -779,14 +768,16 @@ export async function seedAdminStoreIfEmpty(): Promise<void> {
   if (existing[0].count > 0) return;
 
   const seedProducts = [
-    { title: "Eid Premium Panjabi", price: 1650, quantity: 12, description: "EP-101", category: "Men's Wear", swatch_color: "#d4a373", swatch_code: "EP", variants: [{ label: "M", stock: 5 }, { label: "L", stock: 4 }, { label: "XL", stock: 3 }] },
-    { title: "Classic Linen Shirt", price: 1100, quantity: 8, description: "CL-205", category: "Men's Wear", swatch_color: "#5b8def", swatch_code: "CL", variants: [{ label: "M", stock: 3 }, { label: "L", stock: 5 }] },
-    { title: "Silk Sharee — Maroon", price: 3200, quantity: 4, description: "SS-88", category: "Women's Wear", swatch_color: "#d64b60", swatch_code: "SR", variants: [{ label: "Free size", stock: 4 }] },
-    { title: "Cotton Polo T-shirt", price: 550, quantity: 28, description: "CP-44", category: "Men's Wear", swatch_color: "#3fae7a", swatch_code: "CP", variants: [{ label: "S", stock: 10 }, { label: "M", stock: 10 }, { label: "L", stock: 8 }] },
-    { title: "Traditional Foti", price: 750, quantity: 15, description: "TF-09", category: "Kids", swatch_color: "#f1c357", swatch_code: "TF", variants: [{ label: "S", stock: 5 }, { label: "M", stock: 10 }] },
-    { title: "Ladies Casual Kurti", price: 1450, quantity: 6, description: "LCK-12", category: "Women's Wear", swatch_color: "#ec7b9a", swatch_code: "LK", variants: [{ label: "38", stock: 3 }, { label: "40", stock: 3 }] },
-    { title: "Leather Formal Shoes", price: 2200, quantity: 9, description: "LF-77", category: "Footwear", swatch_color: "#3e3e3e", swatch_code: "LS", variants: [{ label: "40", stock: 3 }, { label: "42", stock: 4 }, { label: "44", stock: 2 }] },
-    { title: "Denim Jacket", price: 2350, quantity: 7, description: "DJ-33", category: "Men's Wear", swatch_color: "#627bb0", swatch_code: "DJ", variants: [{ label: "M", stock: 3 }, { label: "L", stock: 4 }] },
+    { title: "Tintin: The Blue Lotus", author: "Hergé", price: 450, quantity: 18, description: "TBL-001", category: "Comics", image_url: "https://covers.openlibrary.org/b/id/755245-L.jpg", max_discount: 30 },
+    { title: "Tintin: Destination Moon", author: "Hergé", price: 450, quantity: 18, description: "TDM-002", category: "Comics", image_url: "https://covers.openlibrary.org/b/id/8728178-L.jpg", max_discount: 30 },
+    { title: "Tintin: The Secret of the Unicorn", author: "Hergé", price: 450, quantity: 22, description: "TSU-003", category: "Comics", image_url: "https://covers.openlibrary.org/b/id/6979825-L.jpg", max_discount: 30 },
+    { title: "Harry Potter and the Philosopher's Stone", author: "J.K. Rowling", price: 650, quantity: 30, description: "HP1-004", category: "Fantasy", image_url: "https://covers.openlibrary.org/b/id/15155833-L.jpg", max_discount: 50 },
+    { title: "Harry Potter and the Chamber of Secrets", author: "J.K. Rowling", price: 650, quantity: 0, description: "HP2-005", category: "Fantasy", image_url: "https://covers.openlibrary.org/b/id/15158664-L.jpg", max_discount: 50 },
+    { title: "Harry Potter and the Prisoner of Azkaban", author: "J.K. Rowling", price: 701, quantity: 4, description: "HP3-006", category: "Fantasy", image_url: "https://covers.openlibrary.org/b/id/10580435-L.jpg", max_discount: 0 },
+    { title: "The Metamorphosis", author: "Franz Kafka", price: 350, quantity: 35, description: "KM-007", category: "Classic", image_url: "https://covers.openlibrary.org/b/id/12820198-L.jpg", max_discount: 20 },
+    { title: "The Trial", author: "Franz Kafka", price: 500, quantity: 12, description: "KT-008", category: "Classic", image_url: "https://covers.openlibrary.org/b/id/997423-L.jpg", max_discount: 25 },
+    { title: "1984", author: "George Orwell", price: 400, quantity: 28, description: "OR-009", category: "Dystopian", image_url: "https://covers.openlibrary.org/b/id/9267242-L.jpg", max_discount: 40 },
+    { title: "The Great Gatsby", author: "F. Scott Fitzgerald", price: 380, quantity: 40, description: "FG-010", category: "Classic", image_url: "https://covers.openlibrary.org/b/id/10590366-L.jpg", max_discount: 30 },
   ];
 
   const created: Product[] = [];
@@ -800,10 +791,10 @@ export async function seedAdminStoreIfEmpty(): Promise<void> {
   await createOrder({ product_id: p1.id, quantity: 1, sender_id: "fb_991010334", customer_name: "Rina Akter", phone: "+880 1811-445566", channel: "messenger", receive_score: 91 });
   await createOrder({ product_id: p3.id, quantity: 1, sender_id: "wa_8801711556677", customer_name: "Fatima Begum", phone: "+880 1711-556677", channel: "whatsapp", receive_score: 76 });
 
-  await saveMessage({ sender_id: "fb_882910112", role: "user", content: "আসসালামু আলাইকুম। পাঞ্জাবি মিডিয়াম সাইজ আছে?" });
-  await saveMessage({ sender_id: "fb_882910112", role: "assistant", content: "ওয়ালাইকুমুস সালাম। হ্যাঁ, মিডিয়াম সাইজ আছে। আপনার ডেলিভারি ঠিকানা দিলে অর্ডার কনফার্ম করতে পারব।" });
+  await saveMessage({ sender_id: "fb_882910112", role: "user", content: "আসসালামু আলাইকুম। Harry Potter আছে?" });
+  await saveMessage({ sender_id: "fb_882910112", role: "assistant", content: "ওয়ালাইকুমুস সালাম। হ্যাঁ, J.K. Rowling-এর Harry Potter সিরিজ আছে। আপনি কোন বইটি চান?" });
   await saveMessage({ sender_id: "wa_8801911223344", role: "user", content: "Delivery kothay hobe?" });
-  await saveMessage({ sender_id: "wa_8801911223344", role: "assistant", content: "Sir, we deliver all over Bangladesh via courier. Please share your full address." });
+  await saveMessage({ sender_id: "wa_8801911223344", role: "assistant", content: "Sir, we deliver books all over Bangladesh via courier. Please share your full address and phone number." });
 }
 
 export async function resetDemoStore(): Promise<SettingsRow> {
