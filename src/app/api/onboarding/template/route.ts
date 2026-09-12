@@ -11,10 +11,10 @@ export async function GET() {
   ];
 
   const sampleRows = [
-    ['Eid Premium Panjabi', '1650', '12', 'EP-101', "Men's Wear", '', '#d4a373', 'EP'],
-    ['Classic Linen Shirt', '1100', '8', 'CL-205', "Men's Wear", '', '#5b8def', 'CL'],
-    ['Silk Sharee — Maroon', '3200', '4', 'SS-88', "Women's Wear", '', '#d64b60', 'SR'],
-    ['Cotton Polo T-shirt', '550', '28', 'CP-44', "Men's Wear", '', '#3fae7a', 'CP'],
+    ["Tintin: The Blue Lotus", "450", "18", "TBL-001", "Comics", "https://covers.openlibrary.org/b/id/755245-L.jpg", "", ""],
+    ["Harry Potter and the Philosopher's Stone", "650", "30", "HP1-004", "Fantasy", "https://covers.openlibrary.org/b/id/15155833-L.jpg", "", ""],
+    ["1984", "400", "28", "OR-009", "Dystopian", "https://covers.openlibrary.org/b/id/9267242-L.jpg", "", ""],
+    ["The Great Gatsby", "380", "40", "FG-010", "Classic", "https://covers.openlibrary.org/b/id/10590366-L.jpg", "", ""],
   ];
 
   const escape = (val: string) => {
