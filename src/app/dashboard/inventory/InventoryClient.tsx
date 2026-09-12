@@ -101,16 +101,12 @@ export default function InventoryClient({ products: initialProducts }: { product
   const outCount = products.filter((p) => productStatus(p).label === "Out of stock").length;
   const totalValue = products.reduce((s, p) => s + value(p), 0);
 
-  async function adjustStock(id: number, delta: number) {
-    const p = products.find((x) => x.id === id);
-    if (!p) return;
-    const nextQty = Math.max(0, p.quantity + delta);
-    await fetch(`/api/products/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ quantity: nextQty }),
-    });
-    setProducts((prev) => prev.map((x) => (x.id === id ? { ...x, quantity: nextQty } : x)));
+  async function deleteProduct(id: number) {
+    if (!confirm("Are you sure you want to delete this product?")) return;
+    const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      setProducts((prev) => prev.filter((x) => x.id !== id));
+    }
   }
 
   async function saveProduct(data: {
@@ -308,16 +304,20 @@ export default function InventoryClient({ products: initialProducts }: { product
                       <td className="px-5 py-3 text-right font-mono">৳{Math.round(value(p)).toLocaleString()}</td>
                       <td className="px-5 py-3">
                         <div className="flex items-center justify-end gap-2">
-                          <button onClick={() => adjustStock(p.id, -1)} className="h-6 w-6 rounded-md bg-oa-surface-raise border border-oa-line flex items-center justify-center hover:bg-oa-surface-hi font-mono">−</button>
-                          <button onClick={() => adjustStock(p.id, 1)} className="h-6 w-6 rounded-md bg-oa-surface-raise border border-oa-line flex items-center justify-center hover:bg-oa-surface-hi font-mono">+</button>
                           <button
                             onClick={() => {
                               setEditing(p);
                               setModalOpen(true);
                             }}
-                            className="ml-1 text-[11px] bg-oa-surface-raise border border-oa-line rounded-oa-sm px-2.5 py-1 hover:bg-oa-primary-dim hover:border-oa-primary transition-colors"
+                            className="text-[11px] bg-oa-surface-raise border border-oa-line rounded-oa-sm px-2.5 py-1 hover:bg-oa-primary-dim hover:border-oa-primary transition-colors"
                           >
                             Manage
+                          </button>
+                          <button
+                            onClick={() => deleteProduct(p.id)}
+                            className="text-[11px] bg-oa-red-dim border border-oa-red/30 rounded-oa-sm px-2.5 py-1 text-oa-red hover:bg-oa-red hover:text-white transition-colors"
+                          >
+                            Delete
                           </button>
                         </div>
                       </td>
