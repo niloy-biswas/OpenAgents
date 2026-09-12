@@ -1,0 +1,15 @@
+.env
+.env.local
+service_account.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node / Next.js
+node_modules/
+.next/
+.vercel/
+out/
