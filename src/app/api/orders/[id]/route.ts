@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { getOrder, getProduct, updateOrderStatus } from "@/lib/db";
+import { getOrder, getProduct, updateOrderStatus, saveMessage } from "@/lib/db";
 import { verifySession } from "@/lib/auth";
 import { sendMessage } from "@/lib/messenger";
 
@@ -15,11 +15,19 @@ async function notifyStatusChange(order: Awaited<ReturnType<typeof getOrder>>) {
   const buildMessage = STATUS_NOTIFICATIONS[order.status];
   if (!buildMessage) return;
 
+  const product = await getProduct(order.product_id);
+  const text = buildMessage(product?.title ?? "your order");
+
   try {
-    const product = await getProduct(order.product_id);
-    await sendMessage(order.sender_id, buildMessage(product?.title ?? "your order"));
+    await sendMessage(order.sender_id, text);
   } catch (err) {
     console.error(`[orders] Messenger notification failed for order ${order.id}:`, err);
+  }
+
+  try {
+    await saveMessage({ sender_id: order.sender_id, role: "assistant", content: text });
+  } catch (err) {
+    console.error(`[orders] Saving notification message failed for order ${order.id}:`, err);
   }
 }
 
